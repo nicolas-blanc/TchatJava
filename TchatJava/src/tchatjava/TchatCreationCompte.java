@@ -1,5 +1,6 @@
 
 import javax.swing.JDialog;
+import tchatjava.MessageErreur;
 import tchatjava.TchatCreationServeur;
 
 /*
@@ -96,7 +97,17 @@ public class TchatCreationCompte extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         if(!jTextField1.getText().equals("pseudo"))
-        pseudo = jTextField1.getText();
+        {
+            pseudo = jTextField1.getText();
+            MessageErreur d = new MessageErreur(this, true);
+            d.setText("Pseudo enregistré");
+            d.setVisible(true);
+        }
+        else {
+            MessageErreur d = new MessageErreur(this, true);
+            d.setText("Vous devez mettre un pseudo.");
+            d.setVisible(true);
+        }   
             
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -104,9 +115,14 @@ public class TchatCreationCompte extends javax.swing.JFrame {
         // TODO add your handling code here:
         if(pseudo != null)
         {
-        TchatCreationServeur tcs = new TchatCreationServeur(this, true);
-        tcs.setVisible(true);
+            TchatCreationServeur tcs = new TchatCreationServeur(this, true);
+            tcs.setVisible(true);
         }
+        else {
+            MessageErreur d = new MessageErreur(this, true);
+            d.setText("Vous devez enregistrer un pseudo avant.");
+            d.setVisible(true);
+        } 
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
