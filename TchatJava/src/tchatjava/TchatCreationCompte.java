@@ -1,5 +1,6 @@
 
 import javax.swing.JDialog;
+import tchatjava.TchatCreationServeur;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -94,11 +95,18 @@ public class TchatCreationCompte extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        if(!jTextField1.getText().equals("pseudo"))
         pseudo = jTextField1.getText();
+            
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        if(pseudo != null)
+        {
+        TchatCreationServeur tcs = new TchatCreationServeur(this, true);
+        tcs.setVisible(true);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
