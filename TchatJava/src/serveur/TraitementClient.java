@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import message.Message;
 
 public class TraitementClient extends Thread {
 
@@ -34,7 +35,7 @@ public class TraitementClient extends Thread {
         information();
         Boolean nonfin = true;
         while (nonfin) {
-            
+            nonfin = false;
         }
         fermerTransfert();
         serveur.delListThread(this);

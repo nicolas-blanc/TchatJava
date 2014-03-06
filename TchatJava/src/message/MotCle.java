@@ -4,13 +4,12 @@
  * and open the template in the editor.
  */
 
-package serveur;
-
+package message;
 
 /**
  *
  * @author Nicolas
  */
-public class Users {
-    
+public enum MotCle{
+    MESSAGE,CLOSE
 }
