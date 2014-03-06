@@ -80,19 +80,3 @@ public class Serveur {
         
     }
 }
-/*public static void main (String[] args) {
-    InputStream in = null;
-    try {
-            // Recuperation du flot d'entree
-            in = serveur.getSocketTransfert().getInputStream();
-            if (in != null) {
-                    DataInputStream entree = new DataInputStream(in); // Creation du flot d'entree pour donnees typees
-                    System.out.println("Flux d'entree ouvert");
-                    // Lectures/ecritures
-                    int j = entree.readInt();
-                    System.out.println(j);
-            } else { System.out.println("Erreur du flux d'entree"); }
-    } catch (IOException e) { e.printStackTrace(); }
-    serveur.fermerTransfert();
-    System.out.println("Extinction serveur");
-}*/

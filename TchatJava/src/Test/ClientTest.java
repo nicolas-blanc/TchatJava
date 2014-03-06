@@ -2,10 +2,12 @@ package Test;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import message.*;
 
 // port = 56686
 
@@ -24,7 +26,7 @@ class ClientTest {
 					try {
 						Thread.sleep(20000);
 					} catch (InterruptedException e) { System.out.println("Erreur Thread.sleep()"); }
-                                        //client.ecrire();
+                                        client.ecrire();
 					client.fermerSocket();
 				}
 			} else System.out.println("Erreur de port entre 50000 et 60000");
@@ -64,10 +66,11 @@ class ClientTest {
                 // Recuperation du flot de sortie
                 out = socket.getOutputStream(); 
                 if (out != null) {
-                    DataOutputStream sortie = new DataOutputStream(out); // Creation du flot de sortie pour donnees typees
+                    ObjectOutputStream sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
                     System.out.println("Flux de sortie ouvert");
                     // Lectures/ecritures
-                    sortie.writeInt(42);
+                    Message mss = new Message("Nico", "Salut ca va ?");
+                    sortie.writeObject(mss);
                 } else System.out.println("Erreur d'ouverture du flux de sortie");
             } catch (IOException ex) {
                 Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);

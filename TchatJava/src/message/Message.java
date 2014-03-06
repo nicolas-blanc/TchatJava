@@ -6,6 +6,7 @@
 
 package message;
 
+import java.io.Serializable;
 import static message.MotCle.*;
 
 /**
@@ -13,10 +14,10 @@ import static message.MotCle.*;
  * @author Nicolas
  */
 
-public class Message {
-    private String message;
-    private String pseudo;
-    private MotCle motCle;
+public class Message implements Serializable{
+    private final String message;
+    private final String pseudo;
+    private final MotCle motCle;
 
     public Message(String message, String pseudo, MotCle motCle) {
         this.message = message;
@@ -40,6 +41,11 @@ public class Message {
 
     public MotCle getMotCle() {
         return motCle;
+    }
+
+    public void information() {
+        System.out.println("Pseudo : " + pseudo);
+        System.out.println("Message : " + message);
     }
     
 }
