@@ -22,10 +22,12 @@ public class Compte implements Serializable{
     
     private static final long serialVersionUID = 1L;
     private ArrayList<String> pseudos;
+    private ArrayList<String> serveurs;
     
     public Compte()
     {
         pseudos = new ArrayList();
+        serveurs = new ArrayList();
     }
     
     public ArrayList getPseudos()
@@ -36,6 +38,16 @@ public class Compte implements Serializable{
     public void setPseudo(String pseudo)
     {
         pseudos.add(pseudo);
+    }
+    
+    public ArrayList getServeurs()
+    {
+       return serveurs; 
+    }
+    
+    public void setServeur(String serveur)
+    {
+        serveurs.add(serveur);
     }
     
 
