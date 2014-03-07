@@ -7,6 +7,7 @@
 package tchatjava;
 
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -17,6 +18,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
     private java.awt.Frame padres;
     private ArrayList<String> servs;
     private Compte compt;
+    private String image;
     /**
      * Creates new form TchatCreationServeur
      */
@@ -25,7 +27,17 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         compt = c;
         servs = c.getServeurs();
         initComponents();
+//        if()
+//        {
+//           ImageIcon i = new ImageIcon();
+//           jLabel5.setIcon(i); 
+//        }
         jTextField1.setText((String)compt.getPseudos().get(compt.getPseudos().size()-1));
+    }
+    
+    public void setImage(String img)
+    {
+        image = img;
     }
 
     /**
@@ -49,6 +61,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         jTextField2 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -113,6 +126,13 @@ public class TchatCreationServeur extends javax.swing.JDialog {
             }
         });
 
+        jButton2.setText("Enregistrer");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -134,8 +154,11 @@ public class TchatCreationServeur extends javax.swing.JDialog {
                     .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(40, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jButton2))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,7 +177,8 @@ public class TchatCreationServeur extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addGap(17, 17, 17)))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2))
         );
 
         jTabbedPane1.addTab("Mon Compte", jPanel3);
@@ -193,8 +217,17 @@ public class TchatCreationServeur extends javax.swing.JDialog {
 
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
         // TODO add your handling code here:
-        
+        SelectionImage sc = new SelectionImage(null, true, this);
+        sc.setVisible(true);
+        ImageIcon i = new ImageIcon(image);
+        jLabel5.setIcon(i);
     }//GEN-LAST:event_jLabel5MouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        //cahngement pseudo et image et couleur;
+        compt.sauve();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -240,6 +273,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

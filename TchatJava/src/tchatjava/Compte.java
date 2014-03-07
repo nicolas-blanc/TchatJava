@@ -23,7 +23,7 @@ public class Compte implements Serializable{
     private static final long serialVersionUID = 1L;
     private ArrayList<String> pseudos;
     private ArrayList<String> serveurs;
-    
+   
     public Compte()
     {
         pseudos = new ArrayList();
