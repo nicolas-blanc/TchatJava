@@ -69,7 +69,7 @@ class ClientTest {
                     ObjectOutputStream sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
                     System.out.println("Flux de sortie ouvert");
                     // Lectures/ecritures
-                    Message mss = new Message("Nico", "Salut ca va ?");
+                    Message mss = new Message("Nico", "Salut ca va ? oui oui trés bien :)");
                     sortie.writeObject(mss);
                 } else System.out.println("Erreur d'ouverture du flux de sortie");
             } catch (IOException ex) {
