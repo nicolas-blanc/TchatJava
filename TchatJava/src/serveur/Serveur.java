@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import message.Message;
 
 /**
  *
@@ -21,7 +22,7 @@ public class Serveur {
     private final Integer port;
     private ServerSocket socket_ecoute;
     private Socket socket_transfert;
-    private LinkedBlockingQueue listThread; // a modif -> voir blockingqueue ou autre ==> ne gere l'exclusion mutuelle
+    private LinkedBlockingQueue<TraitementClient> listThread;
 
     public static void main (String[] args) {
         if(args.length == 1) {
@@ -49,7 +50,7 @@ public class Serveur {
     
     private void ouvrirTransfert() {
         try {
-            socket_transfert = socket_ecoute.accept(); //a remettre dans serveur
+            socket_transfert = socket_ecoute.accept();
             System.out.println("Serveur Ok");
         } catch (IOException ex) {
             Logger.getLogger(TraitementClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -69,14 +70,12 @@ public class Serveur {
     }
     
     public void delListThread(TraitementClient tc) {
-        
+        listThread.remove(tc);
     }
     
-    public void renvoi(String Mss) {
-        
-    }
-    
-    public void renvoi(/*Fichier*/) {
-        
+    public void renvoi(Message mss) {
+        for(TraitementClient thread : listThread) {
+            thread.renvoi(mss);
+        }
     }
 }

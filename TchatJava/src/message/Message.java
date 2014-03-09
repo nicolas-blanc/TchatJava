@@ -19,13 +19,13 @@ public class Message implements Serializable{
     private final String pseudo;
     private final MotCle motCle;
 
-    public Message(String message, String pseudo, MotCle motCle) {
+    public Message(String pseudo, String message, MotCle motCle) {
         this.message = message;
         this.pseudo = pseudo;
         this.motCle = motCle;
     }
 
-    public Message(String message, String pseudo) {
+    public Message(String pseudo, String message) {
         this.message = message;
         this.pseudo = pseudo;
         this.motCle = MESSAGE;
