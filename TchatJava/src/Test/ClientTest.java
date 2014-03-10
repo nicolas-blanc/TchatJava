@@ -24,11 +24,11 @@ class ClientTest {
 				ClientTest client = new ClientTest(args[1],Integer.parseInt(args[0]));
 				if(client.getOuvert()) {
 					client.information();
+                                        client.ecrire();
+                                        System.out.println("1");
 					/*try {
 						Thread.sleep(20000);
 					} catch (InterruptedException e) { System.out.println("Erreur Thread.sleep()"); }*/
-                                        client.ecrire();
-                                        System.out.println("1");
 					client.fermerSocket();
 				}
 			} else System.out.println("Erreur de port entre 50000 et 60000");
@@ -53,8 +53,11 @@ class ClientTest {
 	
 	public void fermerSocket() {
 		try {
-			socket.close();
-			System.out.println("Deconnection au serveur");
+                    OutputStream out = null;
+                    out = socket.getOutputStream();ObjectOutputStream sortie = new ObjectOutputStream(out);
+                    sortie.writeObject(new Message(" ", " ", MotCle.CLOSE));
+                    System.out.println("Deconnection du serveur");
+                    //socket.close();
 		} catch (IOException e) { System.out.println("Erreur fermeture connexion"); }
 	}
 	
@@ -73,7 +76,8 @@ class ClientTest {
                     ObjectOutputStream sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
                     System.out.println("Flux de sortie ouvert");
                     // Lectures/ecritures
-                    Message mss = new Message("Nico", "Salut ca va ? oui oui trés bien :)");
+                    Integer text = System.in.read();
+                    Message mss = new Message("Nico", text.toString());
                     sortie.writeObject(mss);
                     System.out.println("2");
                 } else System.out.println("Erreur d'ouverture du flux de sortie");// Recuperation du flot d'entree

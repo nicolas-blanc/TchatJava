@@ -9,18 +9,43 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import message.Message;
+import static message.MotCle.CLOSE;
 
 public class TraitementClient extends Thread {
 
     private final Serveur serveur;
     private final Socket socket_transfert;
-    private Boolean nonfin;
+    private boolean nonfin;
+    private InputStream in;
+    private ObjectInputStream entree;
+    private OutputStream out;
+    private ObjectOutputStream sortie;
 
     public TraitementClient(Serveur serv, Socket so) {
         serveur = serv;
         socket_transfert = so;
         serveur.addListThread(this);
+        ouvrirTransfert();
         nonfin = true;
+    }
+    
+    private void ouvrirTransfert() {
+        try {
+            in = null;
+            out = null;
+            // Recuperation du flot d'entree
+            while(in == null)
+                in = socket_transfert.getInputStream();
+            entree = new ObjectInputStream(in); // Creation du flot d'entree pour donnees typees
+            // Recuperation du flot de sortie
+            while(out == null)
+                out = socket_transfert.getOutputStream();
+            sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
+
+            System.out.println("Flux ouvert");
+        } catch (IOException ex) {
+            Logger.getLogger(TraitementClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void fermerTransfert() {
@@ -45,20 +70,17 @@ public class TraitementClient extends Thread {
     @Override
     public void run() {
         information();
-        InputStream in = null;
         try {
-            // Recuperation du flot d'entree
-            in = socket_transfert.getInputStream();
-            if (in != null) {
-                ObjectInputStream entree = new ObjectInputStream(in); // Creation du flot d'entree pour donnees typees
-                System.out.println("Flux d'entree ouvert");
-                while (nonfin) {
-                    // Lectures/ecritures
-                    TraiterMessage tm = new TraiterMessage(this, (Message) entree.readObject());
-                    tm.start();
-                }
-            } else { System.out.println("Erreur du flux d'entree"); }
-        } catch (IOException | ClassNotFoundException ex) {
+            while (nonfin) {
+                // Lectures/ecritures
+                Message mss;
+                mss = (Message) entree.readObject();
+                if(mss.getMotCle() == CLOSE)
+                    nonfin = false;
+                else
+                    transfertMessage(mss);
+            }
+        } catch (ClassNotFoundException | IOException ex) {
             Logger.getLogger(TraitementClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         fermerTransfert();
@@ -67,17 +89,17 @@ public class TraitementClient extends Thread {
 
     public void renvoi(Message mss) {
         try {
-            OutputStream out = null;
-            // Recuperation du flot de sortie
-            out = socket_transfert.getOutputStream();
             if (out != null) {
-                ObjectOutputStream sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
                 // Lectures/ecritures
                 sortie.writeObject(mss);
                 System.out.println("Renvoi");
             } else System.out.println("Erreur d'ouverture du flux de sortie");
         } catch (IOException ex) {
             Logger.getLogger(TraitementClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }    
+    }
+    
+    public void transfertMessage (Message mss) {
+        serveur.renvoi(mss);
     }
 }
