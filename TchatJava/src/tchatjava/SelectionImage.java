@@ -6,6 +6,8 @@
 
 package tchatjava;
 
+import java.io.File;
+
 /**
  *
  * @author MouaHH
@@ -90,13 +92,24 @@ public class SelectionImage extends javax.swing.JDialog {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        if(d.getImage()==null)
+        d.setImage("");
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        d.setImage(jTextField1.getText());
-        this.dispose();
+        File file = new File(jTextField1.getText());
+        if(file.exists()) {
+          d.setImage(jTextField1.getText());
+          this.dispose();
+        } 
+        else
+        {
+            MessageErreur dia= new MessageErreur();
+            dia.setText("Vous n'avez pas saisie un fichier valide !");
+            dia.setVisible(true);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

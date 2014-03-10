@@ -4,12 +4,19 @@
  * and open the template in the editor.
  */
 
-package message;
+package tchatjava;
+
+import java.io.Serializable;
+import javax.swing.*;
+import java.awt.Color;
 
 /**
  *
  * @author Nicolas
  */
-public enum MotCle{
-    MESSAGE,CLOSE,VERIFICATIONPSEUDO
+public class Users {
+    
+    private ImageIcon img;
+    private Color couleur;
+    
 }

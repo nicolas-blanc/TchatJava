@@ -8,6 +8,7 @@ package tchatjava;
 
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import java.awt.Image; 
 
 /**
  *
@@ -27,17 +28,22 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         compt = c;
         servs = c.getServeurs();
         initComponents();
-//        if()
-//        {
-//           ImageIcon i = new ImageIcon();
-//           jLabel5.setIcon(i); 
-//        }
+        if(compt.getImage()!=null)
+        {
+           ImageIcon i = compt.getImage();
+           jLabel5.setIcon(i); 
+        }
         jTextField1.setText((String)compt.getPseudos().get(compt.getPseudos().size()-1));
     }
     
     public void setImage(String img)
     {
         image = img;
+    }
+    
+    public String getImage()
+    {
+        return image;
     }
 
     /**
@@ -207,7 +213,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         // TODO add your handling code here:
         compt.setServeur((String)jComboBox1.getSelectedItem());
         compt.sauve();
-        Tchat t = new Tchat(padres, true);
+        Tchat t = new Tchat(padres, true, compt);
         t.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -219,8 +225,13 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         // TODO add your handling code here:
         SelectionImage sc = new SelectionImage(null, true, this);
         sc.setVisible(true);
+        if(!image.isEmpty())
+        {
         ImageIcon i = new ImageIcon(image);
-        jLabel5.setIcon(i);
+        ImageIcon resultat = new ImageIcon(i.getImage().getScaledInstance(89, 60, Image.SCALE_DEFAULT));
+        jLabel5.setIcon(resultat);
+        compt.setImage(resultat);
+        }
     }//GEN-LAST:event_jLabel5MouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
