@@ -6,11 +6,17 @@
 
 package serveur;
 
+import java.io.Serializable;
+import javax.swing.*;
+import java.awt.Color;
 
 /**
  *
  * @author Nicolas
  */
-public class Users {
+public class Users implements Serializable {
+    
+    private ImageIcon img;
+    private Color couleur;
     
 }
