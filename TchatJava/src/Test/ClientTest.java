@@ -56,8 +56,11 @@ class ClientTest {
                     OutputStream out = null;
                     out = socket.getOutputStream();ObjectOutputStream sortie = new ObjectOutputStream(out);
                     sortie.writeObject(new Message(" ", " ", MotCle.CLOSE));
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) { System.out.println("Erreur Thread.sleep()"); }
                     System.out.println("Deconnection du serveur");
-                    //socket.close();
+                    socket.close();
 		} catch (IOException e) { System.out.println("Erreur fermeture connexion"); }
 	}
 	
@@ -76,8 +79,7 @@ class ClientTest {
                     ObjectOutputStream sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
                     System.out.println("Flux de sortie ouvert");
                     // Lectures/ecritures
-                    Integer text = System.in.read();
-                    Message mss = new Message("Nico", text.toString());
+                    Message mss = new Message("Nico", "Hello ! It's me !");
                     sortie.writeObject(mss);
                     System.out.println("2");
                 } else System.out.println("Erreur d'ouverture du flux de sortie");// Recuperation du flot d'entree
