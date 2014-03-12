@@ -31,6 +31,14 @@ public class Message implements Serializable{
         this.motCle = MESSAGE;
     }
 
+    public Message(Message mss) {
+        this.message = mss.getMessage();
+        this.pseudo = mss.getPseudo();
+        this.motCle = mss.getMotCle();
+    }
+    
+    
+
     public String getMessage() {
         return message;
     }

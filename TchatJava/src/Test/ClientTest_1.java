@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.*;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import message.*;
@@ -16,7 +17,11 @@ class ClientTest_1 {
 
 	private final Integer port;
 	private final String host;
-	private static Socket socket;
+	private Socket socket;
+        private OutputStream out;
+        private ObjectOutputStream sortie;
+        private InputStream in;
+        private ObjectInputStream entree;
 
 	public static void main (String[] args) {
 		if(args.length == 2) {
@@ -24,10 +29,12 @@ class ClientTest_1 {
 				ClientTest_1 client = new ClientTest_1(args[1],Integer.parseInt(args[0]));
 				if(client.getOuvert()) {
 					client.information();
+                                        client.ouvrirStream();
+                                        client.ecrire();
+                                        System.out.println("1");
 					/*try {
 						Thread.sleep(20000);
 					} catch (InterruptedException e) { System.out.println("Erreur Thread.sleep()"); }*/
-                                        client.ecrire();
 					client.fermerSocket();
 				}
 			} else System.out.println("Erreur de port entre 50000 et 60000");
@@ -45,15 +52,41 @@ class ClientTest_1 {
 	}
 	
 	private void ouvrirSocket() {
-		try {
-			socket = new Socket (host, port);
-		} catch (IOException e) { socket = null; System.out.println("Erreur ouverture connexion"); }
+            try {
+                socket = new Socket (host, port);
+                
+            } catch (IOException e) { socket = null; System.out.println("Erreur ouverture connexion"); }
 	}
+        
+        private void ouvrirStream() {
+            try {
+                in = null;
+                out = null;
+                // Recuperation du flot de sortie
+                while(out == null) {
+                    out = socket.getOutputStream();
+                    System.out.println("1");
+                }
+                sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
+                System.out.println("Flux de sortie ouvert");
+                // Recuperation du flot d'entree
+                while(in == null)
+                    in = socket.getInputStream();
+                entree = new ObjectInputStream(in); // Creation du flot d'entree pour donnees typees
+                System.out.println("Flux d'entrée ouvert");
+            } catch (IOException ex) {
+                Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 	
 	public void fermerSocket() {
 		try {
-			socket.close();
-			System.out.println("Deconnection au serveur");
+                    sortie.writeObject(new Message(" ", " ", MotCle.CLOSE));
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) { System.out.println("Erreur Thread.sleep()"); }
+                    System.out.println("Deconnection du serveur");
+                    socket.close();
 		} catch (IOException e) { System.out.println("Erreur fermeture connexion"); }
 	}
 	
@@ -63,26 +96,17 @@ class ClientTest_1 {
         
         public void ecrire() {
             try {
-                //OutputStream out = null;
-                InputStream in = null;
-                // Recuperation du flot de sortie
-                /*out = socket.getOutputStream();
-                if (out != null) {
-                    ObjectOutputStream sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
-                    System.out.println("Flux de sortie ouvert");
+                //Scanner sc = new Scanner(System.in);
+                while(true) {
+                    //System.out.println("Saisissez une phrase:");
+                    //String str = sc.nextLine();
                     // Lectures/ecritures
-                    Message mss = new Message("Nico", "Salut ca va ?");
-                    sortie.writeObject(mss);
-                } else System.out.println("Erreur d'ouverture du flux de sortie");// Recuperation du flot d'entree*/
-                in = socket.getInputStream();
-                if (in != null) {
-                    ObjectInputStream entree = new ObjectInputStream(in); // Creation du flot d'entree pour donnees typees
-                    System.out.println("Flux d'entree ouvert");
+                    //Message mss = new Message("Nico", str);
+                    //sortie.writeObject(mss);
                     // Lectures/ecritures
                     Message mss2 = (Message) entree.readObject();
                     mss2.information();
-                    entree.close();
-                } else { System.out.println("Erreur du flux d'entree"); }
+                }
             } catch (    IOException | ClassNotFoundException ex) {
                 Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -25,7 +25,6 @@ public class TraitementClient extends Thread {
         serveur = serv;
         socket_transfert = so;
         serveur.addListThread(this);
-        ouvrirTransfert();
         nonfin = true;
     }
     
@@ -34,15 +33,21 @@ public class TraitementClient extends Thread {
             in = null;
             out = null;
             // Recuperation du flot d'entree
-            while(in == null)
+            while(in == null) {
                 in = socket_transfert.getInputStream();
+                System.out.println("1");
+            }
             entree = new ObjectInputStream(in); // Creation du flot d'entree pour donnees typees
+            if (entree != null)
+                System.out.println("Flux d'entrée ouvert");
+
             // Recuperation du flot de sortie
             while(out == null)
                 out = socket_transfert.getOutputStream();
             sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
-
-            System.out.println("Flux ouvert");
+            if (sortie != null)
+                System.out.println("Flux de sortie ouvert");
+            
         } catch (IOException ex) {
             Logger.getLogger(TraitementClient.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -70,6 +75,7 @@ public class TraitementClient extends Thread {
     @Override
     public void run() {
         information();
+        ouvrirTransfert();
         try {
             while (nonfin) {
                 // Lectures/ecritures
@@ -89,14 +95,15 @@ public class TraitementClient extends Thread {
 
     public void renvoi(Message mss) {
         try {
-            if (out != null) {
-                // Lectures/ecritures
+            // Lectures/ecritures
+            if (sortie != null) {
                 sortie.writeObject(mss);
                 System.out.println("Renvoi");
-            } else System.out.println("Erreur d'ouverture du flux de sortie");
-        } catch (IOException ex) {
+            } else
+                information();
+        } catch (IOException | NullPointerException ex) {
             Logger.getLogger(TraitementClient.class.getName()).log(Level.SEVERE, null, ex);
-        }    
+        }
     }
     
     public void transfertMessage (Message mss) {
