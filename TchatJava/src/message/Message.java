@@ -19,9 +19,15 @@ public class Message implements Serializable{
     private final String pseudo;
     private final MotCle motCle;
 
-    public Message(String pseudo, String message, MotCle motCle) {
-        this.message = message;
+    public Message(String pseudo, MotCle motCle) {
+        this.message = "";
         this.pseudo = pseudo;
+        this.motCle = motCle;
+    }
+
+    public Message(MotCle motCle) {
+        this.message = "";
+        this.pseudo = "";
         this.motCle = motCle;
     }
 
@@ -30,14 +36,6 @@ public class Message implements Serializable{
         this.pseudo = pseudo;
         this.motCle = MESSAGE;
     }
-
-    public Message(Message mss) {
-        this.message = mss.getMessage();
-        this.pseudo = mss.getPseudo();
-        this.motCle = mss.getMotCle();
-    }
-    
-    
 
     public String getMessage() {
         return message;
@@ -52,8 +50,7 @@ public class Message implements Serializable{
     }
 
     public void information() {
-        System.out.println("Pseudo : " + pseudo);
-        System.out.println("Message : " + message);
+        System.out.println(pseudo + " - " + message);
     }
     
 }

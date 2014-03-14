@@ -65,7 +65,7 @@ public class Compte implements Serializable{
                     ObjectOutputStream sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
                     System.out.println("Flux de sortie ouvert");
                     // Lectures/ecritures
-                    Message mss = new Message((String)this.getPseudos().get(this.getPseudos().size()-1), "", MotCle.VERIFICATIONPSEUDO);
+                    Message mss = new Message((String)this.getPseudos().get(this.getPseudos().size()-1), MotCle.VERIFICATIONPSEUDO);
                     sortie.writeObject(mss);
                     System.out.println("2");
                 } else System.out.println("Erreur d'ouverture du flux de sortie");// Recuperation du flot d'entree

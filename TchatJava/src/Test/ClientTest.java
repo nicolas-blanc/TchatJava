@@ -81,10 +81,7 @@ class ClientTest {
 	
 	public void fermerSocket() {
 		try {
-                    sortie.writeObject(new Message(" ", " ", MotCle.CLOSE));
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) { System.out.println("Erreur Thread.sleep()"); }
+                    sortie.writeObject(new Message(MotCle.CLOSE));
                     System.out.println("Deconnection du serveur");
                     socket.close();
 		} catch (IOException e) { System.out.println("Erreur fermeture connexion"); }

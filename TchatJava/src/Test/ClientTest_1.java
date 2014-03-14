@@ -81,7 +81,7 @@ class ClientTest_1 {
 	
 	public void fermerSocket() {
 		try {
-                    sortie.writeObject(new Message(" ", " ", MotCle.CLOSE));
+                    sortie.writeObject(new Message(MotCle.CLOSE));
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) { System.out.println("Erreur Thread.sleep()"); }
