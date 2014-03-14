@@ -6,6 +6,8 @@
 
 package tchatjava;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import serveur.TraitementClient;
 /**
  *
  * @author MouaHH
@@ -15,6 +17,7 @@ public class Tchat extends javax.swing.JDialog {
     private boolean admin;
     private ArrayList<Users> users;
     private Compte compt;
+    private LinkedBlockingQueue<TraitementClient> listThread;
     
     /**
      * Creates new form Tchat
@@ -23,7 +26,7 @@ public class Tchat extends javax.swing.JDialog {
         super(parent, modal);
         compt = c;
         initComponents();
-        
+        listThread = new LinkedBlockingQueue();
         if(!admin)
         {
             
@@ -180,7 +183,7 @@ public class Tchat extends javax.swing.JDialog {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        compt.connexion(jTextField1.getText());
+        compt.ConnexionEcrire(jTextField1.getText());
     }//GEN-LAST:event_jButton5ActionPerformed
 
     /**

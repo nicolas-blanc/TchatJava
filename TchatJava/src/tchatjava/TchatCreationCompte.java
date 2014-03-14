@@ -96,6 +96,7 @@ public class TchatCreationCompte extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        boolean pris = false;
         if(!((String)jComboBox1.getSelectedItem()).isEmpty())
         {
             pseudo = (String)jComboBox1.getSelectedItem();
@@ -103,10 +104,22 @@ public class TchatCreationCompte extends javax.swing.JFrame {
             {
                 compt.getPseudos().remove(pseudo);
             }
+            else
+            {
+                pris = compt.ConnexionVerifPseudo(pseudo);
+            }
+            if(!pris)
+            {
             compt.setPseudo(pseudo);
             compt.sauve();
             TchatCreationServeur tcs = new TchatCreationServeur(this, true, compt);
             tcs.setVisible(true);
+            }
+            else
+            {
+                MessageErreur msserror = new MessageErreur();
+                msserror.setText("le pseudo a déja été pris");
+            }
         }
         else {
             MessageErreur d = new MessageErreur();

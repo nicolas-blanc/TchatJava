@@ -13,6 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import message.Message;
+import java.util.HashMap;
 
 /**
  *
@@ -23,6 +24,7 @@ public class Serveur {
     private ServerSocket socket_ecoute;
     private Socket socket_transfert;
     private LinkedBlockingQueue<TraitementClient> listThread;
+    private HashMap<String, Users> utilisateurs;
 
     public static void main (String[] args) {
         if(args.length == 1) {
@@ -38,6 +40,16 @@ public class Serveur {
         port = p;
         listThread = new LinkedBlockingQueue();
         ouvrirEcoute();
+    }
+    
+    public HashMap<String, Users> getUtilisateurs()
+    {
+        return utilisateurs;
+    }
+    
+    public void setUtilisateur(String pseudo)
+    {
+        utilisateurs.put(pseudo, new Users());
     }
 
     private void ouvrirEcoute() {
@@ -75,6 +87,7 @@ public class Serveur {
     
     public void renvoi(Message mss) {
         for(TraitementClient thread : listThread) {
+            if(mss.getMotCle()==message.MotCle.MESSAGE)
             thread.renvoi(mss);
         }
     }

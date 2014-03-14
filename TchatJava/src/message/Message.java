@@ -24,6 +24,12 @@ public class Message implements Serializable{
         this.pseudo = pseudo;
         this.motCle = motCle;
     }
+    
+    public Message(String pseudo, String message, MotCle motCle) {
+        this.message = message;
+        this.pseudo = pseudo;
+        this.motCle = motCle;
+    }
 
     public Message(MotCle motCle) {
         this.message = "";

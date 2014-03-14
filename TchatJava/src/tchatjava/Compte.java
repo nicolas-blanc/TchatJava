@@ -37,69 +37,88 @@ public class Compte implements Serializable{
     private ImageIcon img;
     
     private final Integer port;
-	private final String host;
-	private Socket socket;
+    private final String host;
+    private Socket socket;
+    private OutputStream out;
+    private ObjectOutputStream sortie;
+    private InputStream in;
+    private ObjectInputStream entree;
 
-	public void connexion (String message) {
-            ouvrirSocket();
+    
+        public boolean ConnexionVerifPseudo(String pseudo)
+        {
+        boolean pris = false;
+        try{
+            this.ouvrirSocket();
             if(this.getOuvert()) {
-                    this.information();
-                    this.ecrire(message);
-                    System.out.println("1");
-                    this.fermerSocket();
+            this.information();
+            this.ouvrirStream();
+            this.ecrire(pseudo, "", message.MotCle.VERIFICATIONPSEUDO);
+            
+            Message mss2 = (Message) entree.readObject();
+            if(mss2.getMotCle()==message.MotCle.VERIFICATIONPSEUDO)
+            {
+                if(mss2.getMessage()=="pris")
+                {
+                   pris = true;
+                }
             }
+            }
+            
+            }
+             catch (IOException | ClassNotFoundException ex) {
+               // Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        return pris;
         }
         
-        
-        public void connexionVerifPseudo(String pseudo) {
-            ouvrirSocket();
-            if(this.getOuvert()) {
-                    this.information();
-                    try {
-                OutputStream out = null;
-                InputStream in = null;
-                // Recuperation du flot de sortie
-                out = socket.getOutputStream();
-                in = socket.getInputStream();
-                if (out != null) {
-                    ObjectOutputStream sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
-                    System.out.println("Flux de sortie ouvert");
-                    // Lectures/ecritures
-                    Message mss = new Message((String)this.getPseudos().get(this.getPseudos().size()-1), MotCle.VERIFICATIONPSEUDO);
-                    sortie.writeObject(mss);
-                    System.out.println("2");
-                } else System.out.println("Erreur d'ouverture du flux de sortie");// Recuperation du flot d'entree
-                System.out.println("3");
-                if (in != null) {
-                    ObjectInputStream entree = new ObjectInputStream(in); // Creation du flot d'entree pour donnees typees
-                    System.out.println("Flux d'entree ouvert");
-                    // Lectures/ecritures
-                    Message mss2 = (Message) entree.readObject();
-                    mss2.information();
-                } else { System.out.println("Erreur du flux d'entree"); }
-            } catch (    IOException | ClassNotFoundException ex) {
-                //Logger.getLogger(class.getName()).log(Level.SEVERE, null, ex);
-            }
-                    System.out.println("1");
-                    this.fermerSocket();
+        public void ConnexionEcrire(String mesage)
+        {
+            if(this.getOuvert()) 
+            {
+            this.information();
+            this.ouvrirStream();
+            this.ecrire((String)this.getPseudos().get(this.getPseudos().size()-1), mesage, message.MotCle.MESSAGE);
             }
         }
-	
 	
 	public boolean getOuvert() {
 		return socket != null;
 	}
 	
 	private void ouvrirSocket() {
-		try {
-			socket = new Socket (host, port);
-		} catch (IOException e) { socket = null; System.out.println("Erreur ouverture connexion"); }
+            try {
+                socket = new Socket (host, port);
+                
+            } catch (IOException e) { socket = null; System.out.println("Erreur ouverture connexion"); }
 	}
+        
+        private void ouvrirStream() {
+            try {
+                in = null;
+                out = null;
+                // Recuperation du flot de sortie
+                while(out == null) {
+                    out = socket.getOutputStream();
+                    System.out.println("1");
+                }
+                sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
+                System.out.println("Flux de sortie ouvert");
+                // Recuperation du flot d'entree
+                while(in == null)
+                    in = socket.getInputStream();
+                entree = new ObjectInputStream(in); // Creation du flot d'entree pour donnees typees
+                System.out.println("Flux d'entrée ouvert");
+            } catch (IOException ex) {
+               // Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 	
 	public void fermerSocket() {
 		try {
-			socket.close();
-			System.out.println("Deconnection au serveur");
+                    sortie.writeObject(new Message(MotCle.CLOSE));
+                    System.out.println("Deconnection du serveur");
+                    socket.close();
 		} catch (IOException e) { System.out.println("Erreur fermeture connexion"); }
 	}
 	
@@ -107,32 +126,28 @@ public class Compte implements Serializable{
 		System.out.println("Ip : " + socket.getInetAddress() + " Port : " + socket.getPort());
 	}
         
-        public void ecrire(String text) {
+        public void ecrire(String pseudo, String messageE, message.MotCle m) {
             try {
-                OutputStream out = null;
-                InputStream in = null;
-                // Recuperation du flot de sortie
-                out = socket.getOutputStream();
-                in = socket.getInputStream();
-                if (out != null) {
-                    ObjectOutputStream sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
-                    System.out.println("Flux de sortie ouvert");
+                while(true) {
                     // Lectures/ecritures
-                    Message mss = new Message((String)this.getPseudos().get(this.getPseudos().size()-1), text);
+                    Message mss = new Message(pseudo, messageE, m);
                     sortie.writeObject(mss);
-                    System.out.println("2");
-                } else System.out.println("Erreur d'ouverture du flux de sortie");// Recuperation du flot d'entree
-                System.out.println("3");
-                if (in != null) {
-                    ObjectInputStream entree = new ObjectInputStream(in); // Creation du flot d'entree pour donnees typees
-                    System.out.println("Flux d'entree ouvert");
-                    // Lectures/ecritures
-                    Message mss2 = (Message) entree.readObject();
-                    mss2.information();
-                } else { System.out.println("Erreur du flux d'entree"); }
-            } catch (    IOException | ClassNotFoundException ex) {
-                //Logger.getLogger(class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (IOException ex) {
+              //  Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+        
+        public Message lire() {
+            Message mss2 = new Message("", "");
+            try {
+                while(true) {
+                    mss2 = (Message) entree.readObject();
+                }
+            } catch (    IOException | ClassNotFoundException ex) {
+               // Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return mss2;
         }
     
     public void setImage(ImageIcon i)

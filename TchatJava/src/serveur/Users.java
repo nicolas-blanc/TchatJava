@@ -19,4 +19,9 @@ public class Users implements Serializable {
     private ImageIcon img;
     private Color couleur;
     
+    public Users()
+    {
+        
+    }
+    
 }

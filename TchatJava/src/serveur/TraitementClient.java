@@ -83,8 +83,20 @@ public class TraitementClient extends Thread {
                 mss = (Message) entree.readObject();
                 if(mss.getMotCle() == CLOSE)
                     nonfin = false;
-                else
+                else if(mss.getMotCle() == message.MotCle.MESSAGE)
                     transfertMessage(mss);
+                else if(mss.getMotCle() == message.MotCle.VERIFICATIONPSEUDO)
+                {
+                if(serveur.getUtilisateurs().containsKey(mss.getPseudo()))
+                    this.renvoi(new Message("", "pris", message.MotCle.VERIFICATIONPSEUDO));
+                else
+                    this.renvoi(new Message("", "nonpris", message.MotCle.VERIFICATIONPSEUDO));
+                }
+                else
+                {
+                    //déconnection client
+                    System.out.println("erreur");
+                }
             }
         } catch (ClassNotFoundException | IOException ex) {
             Logger.getLogger(TraitementClient.class.getName()).log(Level.SEVERE, null, ex);
