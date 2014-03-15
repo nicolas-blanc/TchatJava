@@ -164,7 +164,7 @@ public class Compte implements Serializable{
     {
         pseudos = new ArrayList();
         serveurs = new ArrayList();
-        port = 54686;
+        port = 51569;
 	host = "localhost";
     }
     
