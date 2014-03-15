@@ -37,6 +37,7 @@ public class Serveur {
     }
 
     public Serveur(Integer p) {
+        this.setUtilisateurs(new HashMap<String, Users>());
         port = p;
         listThread = new LinkedBlockingQueue();
         ouvrirEcoute();
@@ -87,8 +88,13 @@ public class Serveur {
     
     public void renvoi(Message mss) {
         for(TraitementClient thread : listThread) {
-            if(mss.getMotCle()==message.MotCle.MESSAGE)
             thread.renvoi(mss);
         }
     }
+    
+    private void setUtilisateurs(HashMap<String,Users> users)
+    {
+        utilisateurs = users;
+    }
+            
 }

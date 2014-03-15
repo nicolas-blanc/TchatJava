@@ -119,6 +119,7 @@ public class TchatCreationCompte extends javax.swing.JFrame {
             {
                 MessageErreur msserror = new MessageErreur();
                 msserror.setText("le pseudo a déja été pris");
+                msserror.setVisible(true);
             }
         }
         else {

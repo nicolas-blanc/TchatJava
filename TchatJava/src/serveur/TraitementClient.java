@@ -87,10 +87,17 @@ public class TraitementClient extends Thread {
                     transfertMessage(mss);
                 else if(mss.getMotCle() == message.MotCle.VERIFICATIONPSEUDO)
                 {
-                if(serveur.getUtilisateurs().containsKey(mss.getPseudo()))
-                    this.renvoi(new Message("", "pris", message.MotCle.VERIFICATIONPSEUDO));
-                else
-                    this.renvoi(new Message("", "nonpris", message.MotCle.VERIFICATIONPSEUDO));
+                    if(serveur.getUtilisateurs().containsKey(mss.getPseudo()))
+                    {
+                        System.out.println("entrée");
+                        this.renvoi(new Message("", "oui", message.MotCle.VERIFICATIONPSEUDO));
+                    }
+                    else
+                    {
+                        System.out.println("entré5555e");
+                        this.renvoi(new Message("", "non", message.MotCle.VERIFICATIONPSEUDO));
+                        serveur.setUtilisateur(mss.getPseudo());
+                    }
                 }
                 else
                 {

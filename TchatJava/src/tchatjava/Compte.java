@@ -47,20 +47,25 @@ public class Compte implements Serializable{
     
         public boolean ConnexionVerifPseudo(String pseudo)
         {
-        boolean pris = false;
+        boolean pris = true;
         try{
             this.ouvrirSocket();
             if(this.getOuvert()) {
             this.information();
             this.ouvrirStream();
             this.ecrire(pseudo, "", message.MotCle.VERIFICATIONPSEUDO);
-            
             Message mss2 = (Message) entree.readObject();
             if(mss2.getMotCle()==message.MotCle.VERIFICATIONPSEUDO)
             {
-                if(mss2.getMessage()=="pris")
+                if(mss2.getMessage().contains("oui"))
                 {
+                    System.out.println("entrée");
                    pris = true;
+                }
+                else
+                {
+                    pris = false;
+                    System.out.println("en4495949rée");
                 }
             }
             }
@@ -128,11 +133,9 @@ public class Compte implements Serializable{
         
         public void ecrire(String pseudo, String messageE, message.MotCle m) {
             try {
-                while(true) {
                     // Lectures/ecritures
                     Message mss = new Message(pseudo, messageE, m);
                     sortie.writeObject(mss);
-                }
             } catch (IOException ex) {
               //  Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
             }
