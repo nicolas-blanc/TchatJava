@@ -20,6 +20,7 @@ public class Tchat extends javax.swing.JDialog {
     private ArrayList<Users> users;
     private Compte compt;
     private ThreadEcoute thread;
+    private String nomRoom;
     
     /**
      * Creates new form Tchat
@@ -30,9 +31,11 @@ public class Tchat extends javax.swing.JDialog {
         return compt;
     }
     
-    public Tchat(java.awt.Frame parent, boolean modal, Compte c) {
+    public Tchat(java.awt.Frame parent, boolean modal, Compte c, String room) {
         super(parent, modal);
         compt = c;
+        nomRoom = room;
+        compt.demandeUsersRoom(nomRoom, this);
         initComponents();
         thread = new ThreadEcoute(this, compt.getSocket());
         thread.start();
@@ -194,6 +197,7 @@ public class Tchat extends javax.swing.JDialog {
         // TODO add your handling code here:
         if(!jTextField1.getText().isEmpty())
         compt.ConnexionEcrire(jTextField1.getText());
+        jTextField1.setText("");
     }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
@@ -226,7 +230,7 @@ public class Tchat extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Tchat dialog = new Tchat(new javax.swing.JFrame(), true, new Compte());
+                Tchat dialog = new Tchat(new javax.swing.JFrame(), true, new Compte(), new String());
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -241,6 +245,11 @@ public class Tchat extends javax.swing.JDialog {
     public void setJtextpanel(Message mss)
     {
         jTextPane1.setText(jTextPane1.getText()+mss.getPseudo() + " --- " + mss.getMessage()+'\n');
+    }
+    
+    public void setUser(String user)
+    {
+            jTextField2.setText(user + '\n');
     }
             
     
