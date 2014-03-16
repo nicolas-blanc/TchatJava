@@ -24,6 +24,7 @@ import message.Message;
 import java.io.OutputStream;
 import java.net.*;
 import message.MotCle;
+import java.util.HashMap;
 /**
  *
  * @author ponsma
@@ -51,7 +52,6 @@ public class Compte implements Serializable{
         try{
             this.ouvrirSocket();
             if(this.getOuvert()) {
-            this.information();
             this.ouvrirStream();
             this.ecrire(pseudo, "", message.MotCle.VERIFICATIONPSEUDO);
             Message mss2 = (Message) entree.readObject();
@@ -59,31 +59,70 @@ public class Compte implements Serializable{
             {
                 if(mss2.getMessage().contains("oui"))
                 {
-                    System.out.println("entrée");
                    pris = true;
                 }
                 else
                 {
                     pris = false;
-                    System.out.println("en4495949rée");
                 }
             }
             }
             
             }
              catch (IOException | ClassNotFoundException ex) {
-               // Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Compte.class.getName()).log(Level.SEVERE, null, ex);
             }
         return pris;
         }
         
         public void ConnexionEcrire(String mesage)
         {
+            this.ouvrirSocket();
             if(this.getOuvert()) 
             {
-            this.information();
             this.ouvrirStream();
             this.ecrire((String)this.getPseudos().get(this.getPseudos().size()-1), mesage, message.MotCle.MESSAGE);
+            }
+        }
+        
+        public void ConnexionRoom(String room)
+        {
+            this.ouvrirSocket();
+            if(this.getOuvert()) 
+            {
+            if(this.serveurs.contains(room))
+            {
+                this.ecrire("", "", message.MotCle.CONNEXIONROOM);
+            }
+            else
+            {
+                this.ecrire("", room, message.MotCle.CREATIONROOM);
+            }
+            }
+        }
+        
+        public void demandeRoom()
+        {
+            try{
+            this.ouvrirSocket();
+            if(this.getOuvert()) 
+            {
+            this.ouvrirStream();
+            this.ecrire("", "", message.MotCle.DEMANDEROOMS);
+            
+            Message mss2 = (Message) entree.readObject();
+                if(mss2.getMotCle()==MotCle.ENVOIROOMS)
+                {
+                    for(String roo: ((HashMap<String, Room>)mss2.getDonnees()).keySet())
+                    {
+                        if(!this.serveurs.contains(roo))
+                            this.setServeur(roo);
+                    }
+                }
+            }
+            }
+             catch (IOException | ClassNotFoundException ex) {
+                Logger.getLogger(Compte.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 	
@@ -98,6 +137,11 @@ public class Compte implements Serializable{
             } catch (IOException e) { socket = null; System.out.println("Erreur ouverture connexion"); }
 	}
         
+        public Socket getSocket()
+        {
+            return socket;
+        }
+        
         private void ouvrirStream() {
             try {
                 in = null;
@@ -105,31 +149,24 @@ public class Compte implements Serializable{
                 // Recuperation du flot de sortie
                 while(out == null) {
                     out = socket.getOutputStream();
-                    System.out.println("1");
                 }
                 sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
-                System.out.println("Flux de sortie ouvert");
                 // Recuperation du flot d'entree
                 while(in == null)
                     in = socket.getInputStream();
                 entree = new ObjectInputStream(in); // Creation du flot d'entree pour donnees typees
-                System.out.println("Flux d'entrée ouvert");
             } catch (IOException ex) {
-               // Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Compte.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 	
 	public void fermerSocket() {
 		try {
                     sortie.writeObject(new Message(MotCle.CLOSE));
-                    System.out.println("Deconnection du serveur");
                     socket.close();
 		} catch (IOException e) { System.out.println("Erreur fermeture connexion"); }
 	}
 	
-	public void information() {
-		System.out.println("Ip : " + socket.getInetAddress() + " Port : " + socket.getPort());
-	}
         
         public void ecrire(String pseudo, String messageE, message.MotCle m) {
             try {
@@ -137,20 +174,36 @@ public class Compte implements Serializable{
                     Message mss = new Message(pseudo, messageE, m);
                     sortie.writeObject(mss);
             } catch (IOException ex) {
-              //  Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Compte.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
-        public Message lire() {
-            Message mss2 = new Message("", "");
+        public void lire(Tchat tchat) {
             try {
-                while(true) {
-                    mss2 = (Message) entree.readObject();
+                
+                this.ouvrirSocket();
+                if(this.getOuvert()) {
+                this.ouvrirStream();
+                while(true)
+                {
+                //Scanner sc = new Scanner(System.in);
+                    
+                Message mss2 = (Message) entree.readObject();
+                if(mss2.getMotCle()==MotCle.MESSAGE)
+                tchat.setJtextpanel(mss2);
+                else if(mss2.getMotCle()==MotCle.ENVOIROOMS)
+                {
+                    for(String roo: ((HashMap<String, Room>)mss2.getDonnees()).keySet())
+                    {
+                        if(!this.serveurs.contains(roo))
+                            this.setServeur(roo);
+                    }
+                }
+                }
                 }
             } catch (    IOException | ClassNotFoundException ex) {
-               // Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Compte.class.getName()).log(Level.SEVERE, null, ex);
             }
-            return mss2;
         }
     
     public void setImage(ImageIcon i)

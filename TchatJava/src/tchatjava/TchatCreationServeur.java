@@ -27,6 +27,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         super(parent, modal);
         compt = c;
         servs = c.getServeurs();
+        compt.demandeRoom();
         initComponents();
         if(compt.getImage()!=null)
         {
@@ -213,6 +214,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         // TODO add your handling code here:
         compt.setServeur((String)jComboBox1.getSelectedItem());
         compt.sauve();
+        compt.ConnexionRoom((String)jComboBox1.getSelectedItem());
         Tchat t = new Tchat(padres, true, compt);
         t.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed

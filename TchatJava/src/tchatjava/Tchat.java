@@ -5,6 +5,8 @@
  */
 
 package tchatjava;
+
+import message.Message;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import serveur.TraitementClient;
@@ -17,16 +19,23 @@ public class Tchat extends javax.swing.JDialog {
     private boolean admin;
     private ArrayList<Users> users;
     private Compte compt;
-    private LinkedBlockingQueue<TraitementClient> listThread;
+    private ThreadEcoute thread;
     
     /**
      * Creates new form Tchat
      */
+    
+    public Compte getCompte()
+    {
+        return compt;
+    }
+    
     public Tchat(java.awt.Frame parent, boolean modal, Compte c) {
         super(parent, modal);
         compt = c;
         initComponents();
-        listThread = new LinkedBlockingQueue();
+        thread = new ThreadEcoute(this, compt.getSocket());
+        thread.start();
         if(!admin)
         {
             
@@ -183,6 +192,7 @@ public class Tchat extends javax.swing.JDialog {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
+        if(!jTextField1.getText().isEmpty())
         compt.ConnexionEcrire(jTextField1.getText());
     }//GEN-LAST:event_jButton5ActionPerformed
 
@@ -228,6 +238,12 @@ public class Tchat extends javax.swing.JDialog {
         });
     }
 
+    public void setJtextpanel(Message mss)
+    {
+        jTextPane1.setText(jTextPane1.getText()+mss.getPseudo() + " --- " + mss.getMessage()+'\n');
+    }
+            
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

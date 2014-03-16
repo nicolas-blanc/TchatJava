@@ -5,8 +5,12 @@
  */
 
 package serveur;
-
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.Serializable;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -14,31 +18,29 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import message.Message;
 import java.util.HashMap;
+import tchatjava.Compte;
+import tchatjava.MessageErreur;
 
 /**
  *
  * @author blancn
  */
-public class Serveur {
+public class Serveur implements Serializable {
     private final Integer port;
     private ServerSocket socket_ecoute;
     private Socket socket_transfert;
     private LinkedBlockingQueue<TraitementClient> listThread;
     private HashMap<String, Users> utilisateurs;
+    private HashMap<String, Room> rooms;
 
-    public static void main (String[] args) {
-        if(args.length == 1) {
-            if(Integer.parseInt(args[0]) > 50000 && Integer.parseInt(args[0]) < 60000) {
-                Serveur serveur = new Serveur(Integer.parseInt(args[0]));
-                serveur.attenteClient();
-                System.out.println("Extinction du serveur");
-            } else System.out.println("Erreur de port entre 50000 et 60000");
-        } else System.out.println("Erreur d'arguments [port 50000->60000]");
+    public void lancerServeur() {
+                this.attenteClient();
     }
 
-    public Serveur(Integer p) {
+    public Serveur() {
         this.setUtilisateurs(new HashMap<String, Users>());
-        port = p;
+        this.setRooms(new HashMap<String, Room>());
+        port = 51569;
         listThread = new LinkedBlockingQueue();
         ouvrirEcoute();
     }
@@ -51,6 +53,26 @@ public class Serveur {
     public void setUtilisateur(String pseudo)
     {
         utilisateurs.put(pseudo, new Users());
+    }
+    
+    private void setUtilisateurs(HashMap<String,Users> users)
+    {
+        utilisateurs = users;
+    }
+    
+    public HashMap<String, Room> getRooms()
+    {
+        return rooms;
+    }
+    
+    public void setRoom(String room, String pseudo)
+    {
+        rooms.put(room, new Room(pseudo));
+    }
+    
+    private void setRooms(HashMap<String,Room> rooms)
+    {
+        this.rooms = rooms;
     }
 
     private void ouvrirEcoute() {
@@ -86,15 +108,45 @@ public class Serveur {
         listThread.remove(tc);
     }
     
-    public void renvoi(Message mss) {
+    public void renvoi(Message mss, String room) {
         for(TraitementClient thread : listThread) {
+            if(room == thread.getRoom())
+            {
             thread.renvoi(mss);
+            }
         }
     }
     
-    private void setUtilisateurs(HashMap<String,Users> users)
+    Serveur restaure() 
     {
-        utilisateurs = users;
+            try
+            {
+                FileInputStream fichier = new FileInputStream("Fsauvserv.ser");
+                ObjectInputStream in = new ObjectInputStream(fichier);
+                //private static final long serialVersionUID = 1L;
+                return((Serveur) in.readObject());
+            } 
+            catch (Exception e) 
+            {
+                    MessageErreur dialog = new MessageErreur();
+                    dialog.setText("Probleme de restauration");
+                    return this;
+            } 
+    }
+
+    void sauve() 
+    {
+            try 
+            {
+                FileOutputStream f = new FileOutputStream("Fsauvserv.ser");
+                ObjectOutputStream out = new ObjectOutputStream(f);
+                out.writeObject(this);
+            } 
+            catch (Exception e) 
+            {
+                    MessageErreur dialog = new MessageErreur();
+                    dialog.setText("Pb de Sauvegarde dans le fichier");
+            }
     }
             
 }

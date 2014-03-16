@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import message.Message;
+import java.util.*;
 import static message.MotCle.CLOSE;
 
 public class TraitementClient extends Thread {
@@ -20,6 +21,8 @@ public class TraitementClient extends Thread {
     private ObjectInputStream entree;
     private OutputStream out;
     private ObjectOutputStream sortie;
+    private String pseudo;
+    private String room;
 
     public TraitementClient(Serveur serv, Socket so) {
         serveur = serv;
@@ -85,18 +88,36 @@ public class TraitementClient extends Thread {
                     nonfin = false;
                 else if(mss.getMotCle() == message.MotCle.MESSAGE)
                     transfertMessage(mss);
+                else if(mss.getMotCle() == message.MotCle.CREATIONROOM)
+                {
+                    serveur.setRoom(mss.getMessage(), pseudo);
+                    //ici getMessage() retourne le nom de la salle.
+                    this.room = mss.getMessage();
+                }
+                else if(mss.getMotCle() == message.MotCle.CONNEXIONROOM)
+                {
+                    if(!serveur.getRooms().get(mss.getMessage()).getUtilisateurs().contains(pseudo))
+                    {
+                        serveur.getRooms().get(mss.getMessage()).setUtilisateur(pseudo);
+                    }
+                    //ici getMessage() retourne le nom de la salle.
+                    this.room = mss.getMessage();
+                }
+                else if(mss.getMotCle() == message.MotCle.DEMANDEROOMS)
+                {
+                    this.renvoi(new Message("", "", message.MotCle.ENVOIROOMS, serveur.getRooms()));
+                }
                 else if(mss.getMotCle() == message.MotCle.VERIFICATIONPSEUDO)
                 {
                     if(serveur.getUtilisateurs().containsKey(mss.getPseudo()))
                     {
-                        System.out.println("entrée");
                         this.renvoi(new Message("", "oui", message.MotCle.VERIFICATIONPSEUDO));
                     }
                     else
                     {
-                        System.out.println("entré5555e");
                         this.renvoi(new Message("", "non", message.MotCle.VERIFICATIONPSEUDO));
                         serveur.setUtilisateur(mss.getPseudo());
+                        this.pseudo = mss.getPseudo();
                     }
                 }
                 else
@@ -125,7 +146,12 @@ public class TraitementClient extends Thread {
         }
     }
     
+    public String getRoom()
+    {
+        return room;
+    }
+    
     public void transfertMessage (Message mss) {
-        serveur.renvoi(mss);
+        serveur.renvoi(mss, room);
     }
 }
