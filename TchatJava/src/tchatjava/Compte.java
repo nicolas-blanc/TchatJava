@@ -77,26 +77,25 @@ public class Compte implements Serializable{
         
         public void ConnexionEcrire(String mesage)
         {
-            this.ouvrirSocket();
             if(this.getOuvert()) 
             {
-            this.ouvrirStream();
             this.ecrire((String)this.getPseudos().get(this.getPseudos().size()-1), mesage, message.MotCle.MESSAGE);
             }
         }
         
         public void ConnexionRoom(String room)
         {
-            this.ouvrirSocket();
             if(this.getOuvert()) 
             {
             if(this.serveurs.contains(room))
             {
-                this.ecrire("", "", message.MotCle.CONNEXIONROOM);
+                System.out.println("entrée ici 1");
+                this.ecrire("", room, message.MotCle.CONNEXIONROOM);
             }
             else
             {
-                this.ecrire("", room, message.MotCle.CREATIONROOM);
+                System.out.println("entrée ici 2");
+                this.ecrire(this.pseudos.get(this.pseudos.size()-1), room, message.MotCle.CREATIONROOM);
             }
             }
         }
@@ -104,14 +103,35 @@ public class Compte implements Serializable{
         public void demandeRoom()
         {
             try{
-            this.ouvrirSocket();
             if(this.getOuvert()) 
             {
-            this.ouvrirStream();
             this.ecrire("", "", message.MotCle.DEMANDEROOMS);
             
             Message mss2 = (Message) entree.readObject();
                 if(mss2.getMotCle()==MotCle.ENVOIROOMS)
+                {
+                    for(String roo: ((HashMap<String, Room>)mss2.getDonnees()).keySet())
+                    {
+                        if(!this.serveurs.contains(roo))
+                            this.setServeur(roo);
+                    }
+                }
+            }
+            }
+             catch (IOException | ClassNotFoundException ex) {
+                Logger.getLogger(Compte.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        public void demandeUsersRoom(String room)
+        {
+            try{
+            if(this.getOuvert()) 
+            {
+            this.ecrire("", room, message.MotCle.DEMANDEUSERSROOM);
+            
+            Message mss2 = (Message) entree.readObject();
+                if(mss2.getMotCle()==MotCle.ENVOIUSERSROOM)
                 {
                     for(String roo: ((HashMap<String, Room>)mss2.getDonnees()).keySet())
                     {
@@ -180,10 +200,7 @@ public class Compte implements Serializable{
         
         public void lire(Tchat tchat) {
             try {
-                
-                this.ouvrirSocket();
                 if(this.getOuvert()) {
-                this.ouvrirStream();
                 while(true)
                 {
                 //Scanner sc = new Scanner(System.in);
