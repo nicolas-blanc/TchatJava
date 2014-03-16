@@ -35,10 +35,10 @@ public class Tchat extends javax.swing.JDialog {
         super(parent, modal);
         compt = c;
         nomRoom = room;
+        compt.lire(this);
         compt.demandeUsersRoom(nomRoom, this);
         initComponents();
-        thread = new ThreadEcoute(this, compt.getSocket());
-        thread.start();
+        
         if(!admin)
         {
             
@@ -196,7 +196,7 @@ public class Tchat extends javax.swing.JDialog {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
         if(!jTextField1.getText().isEmpty())
-        compt.ConnexionEcrire(jTextField1.getText());
+        compt.ConnectionEcrire(jTextField1.getText());
         jTextField1.setText("");
     }//GEN-LAST:event_jButton5ActionPerformed
 

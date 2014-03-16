@@ -25,6 +25,8 @@ import java.io.OutputStream;
 import java.net.*;
 import message.MotCle;
 import java.util.HashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import serveur.TraitementClient;
 /**
  *
  * @author ponsma
@@ -46,7 +48,12 @@ public class Compte implements Serializable{
     private ObjectInputStream entree;
 
     
-        public boolean ConnexionVerifPseudo(String pseudo)
+    public ObjectInputStream getEntree()
+    {
+        return entree;
+    }
+    
+        public boolean ConnectionVerifPseudo(String pseudo)
         {
         boolean pris = true;
         try{
@@ -75,7 +82,7 @@ public class Compte implements Serializable{
         return pris;
         }
         
-        public void ConnexionEcrire(String mesage)
+        public void ConnectionEcrire(String mesage)
         {
             if(this.getOuvert()) 
             {
@@ -83,14 +90,14 @@ public class Compte implements Serializable{
             }
         }
         
-        public void ConnexionRoom(String room)
+        public void ConnectionRoom(String room)
         {
             if(this.getOuvert()) 
             {
             if(this.serveurs.contains(room))
             {
                 System.out.println("entrée ici 1");
-                this.ecrire("", room, message.MotCle.CONNEXIONROOM);
+                this.ecrire("", room, message.MotCle.CONNECTIONROOM);
             }
             else
             {
@@ -199,23 +206,8 @@ public class Compte implements Serializable{
         }
         
         public void lire(Tchat tchat) {
-            try {
-                if(this.getOuvert()) {
-                while(true)
-                {
-                //Scanner sc = new Scanner(System.in);
-                Message mss2 = (Message) entree.readObject();
-                if(mss2.getMotCle()==MotCle.MESSAGE)
-                tchat.setJtextpanel(mss2);
-                else if(mss2.getMotCle()==MotCle.USERCONNECXIONROOM)
-                {
-                    tchat.setUser(mss2.getPseudo());
-                }
-                }
-                }
-            } catch (    IOException | ClassNotFoundException ex) {
-                Logger.getLogger(Compte.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            ThreadEcoute thread = new ThreadEcoute(tchat);
+            thread.start();
         }
     
     public void setImage(ImageIcon i)

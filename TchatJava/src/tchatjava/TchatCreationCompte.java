@@ -107,7 +107,7 @@ public class TchatCreationCompte extends javax.swing.JFrame {
             }
             else
             {
-                pris = compt.ConnexionVerifPseudo(pseudo);
+                pris = compt.ConnectionVerifPseudo(pseudo);
             }
             if(!pris)
             {

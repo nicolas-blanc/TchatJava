@@ -95,7 +95,7 @@ public class TraitementClient extends Thread {
                     //ici getMessage() retourne le nom de la salle.
                     this.room = mss.getMessage();
                 }
-                else if(mss.getMotCle() == message.MotCle.CONNEXIONROOM)
+                else if(mss.getMotCle() == message.MotCle.CONNECTIONROOM)
                 {
                     if(!serveur.getRooms().get(mss.getMessage()).getUtilisateurs().contains(pseudo))
                     {
@@ -103,7 +103,7 @@ public class TraitementClient extends Thread {
                     }
                     //ici getMessage() retourne le nom de la salle.
                     this.room = mss.getMessage();
-                    this.transfertMessage(new Message(pseudo,"", MotCle.USERCONNECXIONROOM));
+                    this.transfertMessage(new Message(pseudo,"", MotCle.USERCONNECTIONROOM));
                 }
                 else if(mss.getMotCle() == message.MotCle.DEMANDEROOMS)
                 {

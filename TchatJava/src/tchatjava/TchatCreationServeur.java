@@ -212,7 +212,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        compt.ConnexionRoom((String)jComboBox1.getSelectedItem());
+        compt.ConnectionRoom((String)jComboBox1.getSelectedItem());
         Tchat t = new Tchat(padres, true, compt, (String)jComboBox1.getSelectedItem());
         t.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
