@@ -5,6 +5,7 @@ import javax.swing.JDialog;
 import tchatjava.MessageErreur;
 import tchatjava.TchatCreationServeur;
 import java.util.*;
+import message.MotCle;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -130,9 +131,14 @@ public class TchatCreationCompte extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-                                this.dispose();
-                                compt.sauve();
-				System.exit(0);
+        if(compt.getOuvert())
+        {
+        compt.ecrire(pseudo, "", MotCle.CLOSE);
+        compt.fermerSocket();
+        }
+        this.dispose();
+        compt.sauve();
+        System.exit(0);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
