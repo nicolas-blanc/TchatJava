@@ -56,7 +56,6 @@ public class ThreadEcoute extends Thread {
         try {
             socket_transfert.close();
             System.out.println("Connexion ferme");
-            information();
         } catch (IOException ex) {
            // Logger.getLogger(TraitementClient.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -66,9 +65,6 @@ public class ThreadEcoute extends Thread {
         return tchat;
     }
     
-    public void information() {
-        System.out.println("Ip : " + socket_transfert.getInetAddress() + " Port : " + socket_transfert.getPort());
-    }
     
     @Override
     public void run() {

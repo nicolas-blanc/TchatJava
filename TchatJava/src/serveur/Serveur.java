@@ -110,14 +110,14 @@ public class Serveur implements Serializable {
     
     public void renvoi(Message mss, String room) {
         for(TraitementClient thread : listThread) {
-            if(room == thread.getRoom())
+            if(room.equals(thread.getRoom()))
             {
             thread.renvoi(mss);
             }
         }
     }
     
-    Serveur restaure() 
+    public Serveur restaure() 
     {
             try
             {
@@ -134,7 +134,7 @@ public class Serveur implements Serializable {
             } 
     }
 
-    void sauve() 
+    public void sauve() 
     {
             try 
             {

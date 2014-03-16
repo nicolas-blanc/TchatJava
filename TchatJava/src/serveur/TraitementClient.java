@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import message.Message;
 import java.util.*;
+import message.MotCle;
 import static message.MotCle.CLOSE;
 
 public class TraitementClient extends Thread {
@@ -102,10 +103,15 @@ public class TraitementClient extends Thread {
                     }
                     //ici getMessage() retourne le nom de la salle.
                     this.room = mss.getMessage();
+                    this.transfertMessage(new Message(pseudo,"", MotCle.USERCONNECXIONROOM));
                 }
                 else if(mss.getMotCle() == message.MotCle.DEMANDEROOMS)
                 {
                     this.renvoi(new Message("", "", message.MotCle.ENVOIROOMS, serveur.getRooms()));
+                }
+                else if(mss.getMotCle() == message.MotCle.DEMANDEUSERSROOM)
+                {
+                    this.renvoi(new Message("", "", message.MotCle.ENVOIUSERSROOM, serveur.getRooms().get(mss.getMessage()).getUtilisateurs()));
                 }
                 else if(mss.getMotCle() == message.MotCle.VERIFICATIONPSEUDO)
                 {

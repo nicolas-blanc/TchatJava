@@ -123,7 +123,7 @@ public class Compte implements Serializable{
             }
         }
         
-        public void demandeUsersRoom(String room)
+        public void demandeUsersRoom(String room, Tchat tchat)
         {
             try{
             if(this.getOuvert()) 
@@ -133,11 +133,11 @@ public class Compte implements Serializable{
             Message mss2 = (Message) entree.readObject();
                 if(mss2.getMotCle()==MotCle.ENVOIUSERSROOM)
                 {
-                    for(String roo: ((HashMap<String, Room>)mss2.getDonnees()).keySet())
+                    for(String user : ((ArrayList<String>)mss2.getDonnees()))
                     {
-                        if(!this.serveurs.contains(roo))
-                            this.setServeur(roo);
+                        tchat.setUser(user);
                     }
+                        
                 }
             }
             }
@@ -204,17 +204,12 @@ public class Compte implements Serializable{
                 while(true)
                 {
                 //Scanner sc = new Scanner(System.in);
-                    
                 Message mss2 = (Message) entree.readObject();
                 if(mss2.getMotCle()==MotCle.MESSAGE)
                 tchat.setJtextpanel(mss2);
-                else if(mss2.getMotCle()==MotCle.ENVOIROOMS)
+                else if(mss2.getMotCle()==MotCle.USERCONNECXIONROOM)
                 {
-                    for(String roo: ((HashMap<String, Room>)mss2.getDonnees()).keySet())
-                    {
-                        if(!this.serveurs.contains(roo))
-                            this.setServeur(roo);
-                    }
+                    tchat.setUser(mss2.getPseudo());
                 }
                 }
                 }

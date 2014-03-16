@@ -21,6 +21,8 @@ public class Room implements Serializable {
     public Room(String administrateur)
     {
         this.administrateur = administrateur;
+        utilisateurs = new ArrayList();
+        utilisateurs.add(administrateur);
     }
             
     public void setUtilisateur(String utilisateur)
