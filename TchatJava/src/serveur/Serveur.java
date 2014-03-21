@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package serveur;
 import Rooms.Room;
 import Users.Users;
@@ -20,7 +19,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import message.Message;
 import java.util.HashMap;
-import tchatjava.Compte;
 import tchatjava.MessageErreur;
 import java.util.*;
 
@@ -28,7 +26,8 @@ import java.util.*;
  *
  * @author blancn
  */
-public class Serveur implements Serializable {
+public class Serveur extends Thread implements Serializable {
+
     private final Integer port;
     private ServerSocket socket_ecoute;
     private Socket socket_transfert;
@@ -36,20 +35,21 @@ public class Serveur implements Serializable {
     private HashMap<String, Users> utilisateurs; 
     private HashMap<String, Room> rooms;
 
-    public void lancerServeur() {
-                this.attenteClient();
-    }
-
-    public Serveur() {
+    public Serveur(Integer port) {
+        this.port = port;
         this.setUtilisateurs(new HashMap<String, Users>());
         this.setRooms(new HashMap<String, Room>());
-        port = 51569;
         listThread = new LinkedBlockingQueue();
+        restaure();
         ouvrirEcoute();
     }
-    
-    public HashMap<String, Users> getUtilisateurs()
-    {
+
+    @Override
+    public void run() {
+        attenteClient();
+    }
+
+    public HashMap<String, Users> getUtilisateurs() {
         return utilisateurs;
     }
     
@@ -62,30 +62,34 @@ public class Serveur implements Serializable {
         
         return usrs;
     }
-    
-    public void setUtilisateur(String pseudo)
-    {
+
+    public void setUtilisateur(String pseudo) {
         utilisateurs.put(pseudo, new Users());
     }
-    
-    private void setUtilisateurs(HashMap<String,Users> users)
-    {
+
+    private void setUtilisateurs(HashMap<String, Users> users) {
         utilisateurs = users;
     }
-    
-    public HashMap<String, Room> getRooms()
-    {
+
+    public HashMap<String, Room> getRooms() {
         return rooms;
     }
-    
-    public void setRoom(String room, String pseudo)
-    {
+
+    public void setRoom(String room, String pseudo) {
         rooms.put(room, new Room(pseudo));
     }
-    
-    private void setRooms(HashMap<String,Room> rooms)
-    {
+
+    private void setRooms(HashMap<String, Room> rooms) {
         this.rooms = rooms;
+    }
+    
+    public String getIp() {
+        return socket_ecoute.getInetAddress().toString();
+    }
+    
+    public String getPort() {
+        Integer p = socket_ecoute.getLocalPort();
+        return p.toString();
     }
 
     private void ouvrirEcoute() {
@@ -95,7 +99,7 @@ public class Serveur implements Serializable {
             Logger.getLogger(Serveur.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void ouvrirTransfert() {
         try {
             socket_transfert = socket_ecoute.accept();
@@ -104,28 +108,27 @@ public class Serveur implements Serializable {
             Logger.getLogger(TraitementClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void attenteClient() {
         while (true) {
             ouvrirTransfert();
-            TraitementClient tc = new TraitementClient(this,socket_transfert);
+            TraitementClient tc = new TraitementClient(this, socket_transfert);
             tc.start();
         }
     }
-    
+
     public void addListThread(TraitementClient tc) {
         listThread.add(tc);
     }
-    
+
     public void delListThread(TraitementClient tc) {
         listThread.remove(tc);
     }
-    
+
     public void renvoi(Message mss, String room) {
-        for(TraitementClient thread : listThread) {
-            if(room.equals(thread.getRoom()))
-            {
-            thread.renvoi(mss);
+        for (TraitementClient thread : listThread) {
+            if (room.equals(thread.getRoom())) {
+                thread.renvoi(mss);
             }
         }
     }
@@ -175,19 +178,16 @@ public class Serveur implements Serializable {
             } 
     }
 
-    public void sauve() 
-    {
-            try 
-            {
-                FileOutputStream f = new FileOutputStream("Fsauvserv.ser");
-                ObjectOutputStream out = new ObjectOutputStream(f);
-                out.writeObject(this);
-            } 
-            catch (Exception e) 
-            {
-                    MessageErreur dialog = new MessageErreur();
-                    dialog.setText("Pb de Sauvegarde dans le fichier");
-            }
+    public void sauve() {
+        try {
+            FileOutputStream f = new FileOutputStream("Fsauvserv.ser");
+            ObjectOutputStream out = new ObjectOutputStream(f);
+            out.writeObject(utilisateurs);
+            out.writeObject(rooms);
+        } catch (IOException e) {
+            MessageErreur dialog = new MessageErreur();
+            dialog.setText("Pb de Sauvegarde dans le fichier");
+        }
     }
-            
+
 }

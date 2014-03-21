@@ -31,27 +31,30 @@ public class TraitementClient extends Thread {
         serveur.addListThread(this);
         nonfin = true;
     }
-    
+
     private void ouvrirTransfert() {
         try {
             in = null;
             out = null;
             // Recuperation du flot d'entree
-            while(in == null) {
+            while (in == null) {
                 in = socket_transfert.getInputStream();
                 System.out.println("1");
             }
             entree = new ObjectInputStream(in); // Creation du flot d'entree pour donnees typees
-            if (entree != null)
+            if (entree != null) {
                 System.out.println("Flux d'entrée ouvert");
+            }
 
             // Recuperation du flot de sortie
-            while(out == null)
+            while (out == null) {
                 out = socket_transfert.getOutputStream();
+            }
             sortie = new ObjectOutputStream(out); // Creation du flot de sortie pour donnees typees
-            if (sortie != null)
+            if (sortie != null) {
                 System.out.println("Flux de sortie ouvert");
-            
+            }
+
         } catch (IOException ex) {
             Logger.getLogger(TraitementClient.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -71,11 +74,11 @@ public class TraitementClient extends Thread {
     public Serveur getServeur() {
         return serveur;
     }
-    
+
     public void information() {
         System.out.println("Ip : " + socket_transfert.getInetAddress() + " Port : " + socket_transfert.getPort());
     }
-    
+
     @Override
     public void run() {
         information();
@@ -84,8 +87,9 @@ public class TraitementClient extends Thread {
             while (nonfin) {
                 // Lectures/ecritures
                 Message mss;
-                mss = (Message) entree.readObject();
-                if(mss.getMotCle() == CLOSE)
+                try {
+                    mss = (Message) entree.readObject();
+                    if(mss.getMotCle() == CLOSE)
                     nonfin = false;
                 else if(mss.getMotCle() == message.MotCle.MESSAGE)
                     transfertMessage(mss);
@@ -141,9 +145,12 @@ public class TraitementClient extends Thread {
                 {
                     //déconnection client
                     System.out.println("erreur");
+                    }
+                } catch (IOException ex) {
+                    nonfin = false;
                 }
             }
-        } catch (ClassNotFoundException | IOException ex) {
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(TraitementClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         fermerTransfert();
@@ -155,20 +162,20 @@ public class TraitementClient extends Thread {
             // Lectures/ecritures
             if (sortie != null) {
                 sortie.writeObject(mss);
-                System.out.println("Renvoi");
-            } else
+                //System.out.println("Renvoi");
+            } else {
                 information();
+            }
         } catch (IOException | NullPointerException ex) {
             Logger.getLogger(TraitementClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public String getRoom()
-    {
+
+    public String getRoom() {
         return room;
     }
-    
-    public void transfertMessage (Message mss) {
+
+    public void transfertMessage(Message mss) {
         serveur.renvoi(mss, room);
     }
 }

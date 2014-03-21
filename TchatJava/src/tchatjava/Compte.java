@@ -5,27 +5,18 @@
  */
 package tchatjava;
 
-import java.io.Serializable;
-import java.util.*;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import message.Message;
 import java.io.OutputStream;
-import java.net.*;
 import message.MotCle;
 import java.util.HashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import serveur.TraitementClient;
 import Users.Users;
 import Rooms.Room;
 
@@ -50,6 +41,20 @@ public class Compte {
     private InputStream in;
     private ObjectInputStream entree;
 
+    public Compte() {
+        save = new SauvegardePseudo().restaure();
+        serveurs = new HashMap();
+        usersserv = new HashMap();
+    }
+    
+    public void connexionServeur(Integer port, String host) {
+        this.port = port;
+        this.host = host;
+        this.ouvrirSocket();
+            if (this.getOuvert()) 
+                this.ouvrirStream();
+    }
+    
     public SauvegardePseudo getSave() {
         return save;
     }
@@ -185,17 +190,6 @@ public class Compte {
 
     public ImageIcon getImage() {
         return img;
-    }
-
-    public Compte() {
-        save = new SauvegardePseudo().restaure();
-        serveurs = new HashMap();
-        usersserv = new HashMap();
-        port = 51569;
-        host = "localhost";
-        this.ouvrirSocket();
-            if (this.getOuvert()) 
-                this.ouvrirStream();
     }
 
     public void setPort(Integer port) {

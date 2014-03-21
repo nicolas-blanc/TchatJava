@@ -1,6 +1,5 @@
 package tchatjava;
 
-
 import javax.swing.JDialog;
 import tchatjava.MessageErreur;
 import tchatjava.TchatCreationServeur;
@@ -12,7 +11,6 @@ import message.MotCle;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author ponsma
@@ -31,7 +29,6 @@ public class TchatCreationCompte extends javax.swing.JFrame {
         psds = compt.getSave().getPseudos();
         initComponents();
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -119,49 +116,41 @@ public class TchatCreationCompte extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        
-        compt.setPort(Integer.parseInt(jTextField1.getText()));
-        compt.setHost(jTextField2.getText());
-        
+
+        Integer port = Integer.parseInt(jTextField1.getText());
+        String host = jTextField2.getText();
+
         boolean pris = false;
-        if(!((String)jComboBox1.getSelectedItem()).isEmpty())
-        {
-            pseudo = (String)jComboBox1.getSelectedItem();
-            if(compt.getSave().getPseudos().contains(pseudo))
-            {
+        if (!((String) jComboBox1.getSelectedItem()).isEmpty()) {
+            pseudo = (String) jComboBox1.getSelectedItem();
+            if (compt.getSave().getPseudos().contains(pseudo)) {
                 compt.getSave().getPseudos().remove(pseudo);
-            }
-            else
-            {
+            } else {
                 pris = compt.ConnectionVerifPseudo(pseudo);
             }
-            if(!pris)
-            {
-            compt.getSave().setPseudo(pseudo);
-            compt.getSave().sauve();
-            this.dispose();
-            TchatCreationServeur tcs = new TchatCreationServeur(this, true, compt);
-            tcs.setVisible(true);
-            }
-            else
-            {
+            if (!pris) {
+                compt.getSave().setPseudo(pseudo);
+                compt.getSave().sauve();
+                compt.connexionServeur(port, host);
+                this.dispose();
+                TchatCreationServeur tcs = new TchatCreationServeur(this, true, compt);
+                tcs.setVisible(true);
+            } else {
                 MessageErreur msserror = new MessageErreur();
                 msserror.setText("le pseudo a déja été pris");
                 msserror.setVisible(true);
             }
-        }
-        else {
+        } else {
             MessageErreur d = new MessageErreur();
             d.setText("Vous devez mettre un pseudo.");
             d.setVisible(true);
-        }  
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if(compt.getOuvert())
-        {
-        compt.ecrire(pseudo, "", MotCle.CLOSE);
-        compt.fermerSocket();
+        if (compt.getOuvert()) {
+            compt.ecrire(pseudo, "", MotCle.CLOSE);
+            compt.fermerSocket();
         }
         this.dispose();
         System.exit(0);
@@ -202,7 +191,7 @@ public class TchatCreationCompte extends javax.swing.JFrame {
             public void run() {
                 new TchatCreationCompte().setVisible(true);
             }
-            
+
         });
     }
 
