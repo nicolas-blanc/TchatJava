@@ -8,35 +8,39 @@ import message.MotCle;
 
 public class ThreadEcoute extends Thread {
 
-
-    private Tchat tchat;
+    private final Tchat tchat;
+    private boolean nonfin;
 
     public ThreadEcoute(Tchat tchat) {
         this.tchat = tchat;
+        nonfin = true;
     }
 
     public Tchat getServeur() {
         return tchat;
     }
-    
+
     @Override
     public void run() {
         try {
-                if(tchat.getCompte().getOuvert()) {
-                while(true)
-                {
-                //Scanner sc = new Scanner(System.in);
-                Message mss2 = (Message) tchat.getCompte().getEntree().readObject();
-                if(mss2.getMotCle()==MotCle.MESSAGE)
-                tchat.setJtextpanel(mss2);
-                else if(mss2.getMotCle()==MotCle.USERCONNECTIONROOM)
-                {
-                    tchat.setUser(mss2.getPseudo());
+            if (tchat.getCompte().getOuvert()) {
+                while (nonfin) {
+                    //Scanner sc = new Scanner(System.in);
+                    Message mss2;
+                    try {
+                        mss2 = (Message) tchat.getCompte().getEntree().readObject();
+                        if (mss2.getMotCle() == MotCle.MESSAGE) {
+                            tchat.setJtextpanel(mss2);
+                        } else if (mss2.getMotCle() == MotCle.USERCONNECTIONROOM) {
+                            tchat.setUser(mss2.getPseudo());
+                        }
+                    } catch (IOException ex) {
+                        nonfin = false;
+                    }
                 }
-                }
-                }
-            } catch (IOException | ClassNotFoundException ex) {
-                Logger.getLogger(Compte.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Compte.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
