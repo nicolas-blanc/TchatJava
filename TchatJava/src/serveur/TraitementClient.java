@@ -89,11 +89,17 @@ public class TraitementClient extends Thread {
                     nonfin = false;
                 else if(mss.getMotCle() == message.MotCle.MESSAGE)
                     transfertMessage(mss);
+                else if(mss.getMotCle() == message.MotCle.MESSAGEGLOBAL)
+                {
+                    serveur.renvoi(mss);
+                }
                 else if(mss.getMotCle() == message.MotCle.CREATIONROOM)
                 {
                     serveur.setRoom(mss.getMessage(), pseudo);
                     //ici getMessage() retourne le nom de la salle.
                     this.room = mss.getMessage();
+                    
+                    this.renvoi(new Message("", room, message.MotCle.CREATIONROOM, serveur.getRooms()));
                 }
                 else if(mss.getMotCle() == message.MotCle.CONNECTIONROOM)
                 {
@@ -103,15 +109,20 @@ public class TraitementClient extends Thread {
                     }
                     //ici getMessage() retourne le nom de la salle.
                     this.room = mss.getMessage();
-                    this.transfertMessage(new Message(pseudo,"", MotCle.USERCONNECTIONROOM));
+                    
+                    serveur.renvoi(new Message(pseudo,"", MotCle.CONNECTIONROOM));
                 }
                 else if(mss.getMotCle() == message.MotCle.DEMANDEROOMS)
                 {
+                    this.pseudo = mss.getPseudo();
+                    
                     this.renvoi(new Message("", "", message.MotCle.ENVOIROOMS, serveur.getRooms()));
+                    
+                    serveur.renvoi(new Message(pseudo, "", message.MotCle.USERCONNECTIONSERVEUR, serveur.getUtilisateurs()), this);
                 }
-                else if(mss.getMotCle() == message.MotCle.DEMANDEUSERSROOM)
+                else if(mss.getMotCle() == message.MotCle.DEMANDEUSERSSERVEUR)
                 {
-                    this.renvoi(new Message("", "", message.MotCle.ENVOIUSERSROOM, serveur.getRooms().get(mss.getMessage()).getUtilisateurs()));
+                    this.renvoi(new Message("", "", MotCle.ENVOIUSERSSERVEUR, serveur.getUtilisateurs()));
                 }
                 else if(mss.getMotCle() == message.MotCle.VERIFICATIONPSEUDO)
                 {

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package serveur;
 
 import javax.swing.JLabel;
@@ -15,8 +14,8 @@ import tchatjava.Compte;
  */
 public class LancerServeur extends javax.swing.JFrame {
 
-    
     private Serveur serveur;
+
     /**
      * Creates new form LancerServeur
      */

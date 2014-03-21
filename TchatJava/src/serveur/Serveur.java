@@ -5,6 +5,8 @@
  */
 
 package serveur;
+import Rooms.Room;
+import Users.Users;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.Serializable;
@@ -20,6 +22,7 @@ import message.Message;
 import java.util.HashMap;
 import tchatjava.Compte;
 import tchatjava.MessageErreur;
+import java.util.*;
 
 /**
  *
@@ -30,7 +33,7 @@ public class Serveur implements Serializable {
     private ServerSocket socket_ecoute;
     private Socket socket_transfert;
     private LinkedBlockingQueue<TraitementClient> listThread;
-    private HashMap<String, Users> utilisateurs;
+    private HashMap<String, Users> utilisateurs; 
     private HashMap<String, Room> rooms;
 
     public void lancerServeur() {
@@ -48,6 +51,16 @@ public class Serveur implements Serializable {
     public HashMap<String, Users> getUtilisateurs()
     {
         return utilisateurs;
+    }
+    
+    public ArrayList<String> transformationSetArrayList(Set<String> users)
+    {
+        ArrayList<String> usrs = new ArrayList();
+        
+        for(String user : users)
+            usrs.add(user);
+        
+        return usrs;
     }
     
     public void setUtilisateur(String pseudo)
@@ -111,6 +124,34 @@ public class Serveur implements Serializable {
     public void renvoi(Message mss, String room) {
         for(TraitementClient thread : listThread) {
             if(room.equals(thread.getRoom()))
+            {
+            thread.renvoi(mss);
+            }
+        }
+    }
+    
+    public void renvoi(Message mss) {
+        for(TraitementClient thread : listThread) {
+            thread.renvoi(mss);
+        }
+    }
+    
+    public void renvoi(Message mss, String room, TraitementClient th) {
+        for(TraitementClient thread : listThread) {
+            if(room.equals(thread.getRoom()) && !th.equals(thread))
+            {
+            thread.renvoi(mss);
+            }
+            else
+            {
+            thread.renvoi(new Message("", "", message.MotCle.CONNECTIONROOM, this.rooms));
+            }
+        }
+    }
+    
+    public void renvoi(Message mss, TraitementClient th) {
+        for(TraitementClient thread : listThread) {
+            if(!th.equals(thread))
             {
             thread.renvoi(mss);
             }
