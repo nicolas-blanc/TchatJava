@@ -122,6 +122,60 @@ public class TraitementClient extends Thread {
                     }
                 } catch (IOException ex) {
                     nonfin = false;
+                else if(mss.getMotCle() == message.MotCle.MESSAGE)
+                    transfertMessage(mss);
+                else if(mss.getMotCle() == message.MotCle.MESSAGEGLOBAL)
+                {
+                    serveur.renvoi(mss);
+                }
+                else if(mss.getMotCle() == message.MotCle.CREATIONROOM)
+                {
+                    serveur.setRoom(mss.getMessage(), pseudo);
+                    //ici getMessage() retourne le nom de la salle.
+                    this.room = mss.getMessage();
+                    
+                    this.renvoi(new Message("", room, message.MotCle.CREATIONROOM, serveur.getRooms()));
+                }
+                else if(mss.getMotCle() == message.MotCle.CONNECTIONROOM)
+                {
+                    if(!serveur.getRooms().get(mss.getMessage()).getUtilisateurs().contains(pseudo))
+                    {
+                        serveur.getRooms().get(mss.getMessage()).setUtilisateur(pseudo);
+                    }
+                    //ici getMessage() retourne le nom de la salle.
+                    this.room = mss.getMessage();
+                    
+                    serveur.renvoi(new Message(pseudo,"", MotCle.CONNECTIONROOM));
+                }
+                else if(mss.getMotCle() == message.MotCle.DEMANDEROOMS)
+                {
+                    this.pseudo = mss.getPseudo();
+                    
+                    this.renvoi(new Message("", "", message.MotCle.ENVOIROOMS, serveur.getRooms()));
+                    
+                    serveur.renvoi(new Message(pseudo, "", message.MotCle.USERCONNECTIONSERVEUR, serveur.getUtilisateurs()), this);
+                }
+                else if(mss.getMotCle() == message.MotCle.DEMANDEUSERSSERVEUR)
+                {
+                    this.renvoi(new Message("", "", MotCle.ENVOIUSERSSERVEUR, serveur.getUtilisateurs()));
+                }
+                else if(mss.getMotCle() == message.MotCle.VERIFICATIONPSEUDO)
+                {
+                    if(serveur.getUtilisateurs().containsKey(mss.getPseudo()))
+                    {
+                        this.renvoi(new Message("", "oui", message.MotCle.VERIFICATIONPSEUDO));
+                    }
+                    else
+                    {
+                        this.renvoi(new Message("", "non", message.MotCle.VERIFICATIONPSEUDO));
+                        serveur.setUtilisateur(mss.getPseudo());
+                        this.pseudo = mss.getPseudo();
+                    }
+                }
+                else
+                {
+                    //déconnection client
+                    System.out.println("erreur");
                 }
             }
         } catch (ClassNotFoundException ex) {

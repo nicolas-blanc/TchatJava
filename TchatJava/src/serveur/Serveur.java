@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package serveur;
-
+import Rooms.Room;
+import Users.Users;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.Serializable;
@@ -19,6 +20,7 @@ import java.util.logging.Logger;
 import message.Message;
 import java.util.HashMap;
 import tchatjava.MessageErreur;
+import java.util.*;
 
 /**
  *
@@ -30,7 +32,7 @@ public class Serveur extends Thread implements Serializable {
     private ServerSocket socket_ecoute;
     private Socket socket_transfert;
     private LinkedBlockingQueue<TraitementClient> listThread;
-    private HashMap<String, Users> utilisateurs;
+    private HashMap<String, Users> utilisateurs; 
     private HashMap<String, Room> rooms;
 
     public Serveur(Integer port) {
@@ -49,6 +51,16 @@ public class Serveur extends Thread implements Serializable {
 
     public HashMap<String, Users> getUtilisateurs() {
         return utilisateurs;
+    }
+    
+    public ArrayList<String> transformationSetArrayList(Set<String> users)
+    {
+        ArrayList<String> usrs = new ArrayList();
+        
+        for(String user : users)
+            usrs.add(user);
+        
+        return usrs;
     }
 
     public void setUtilisateur(String pseudo) {
@@ -120,18 +132,50 @@ public class Serveur extends Thread implements Serializable {
             }
         }
     }
-
-    private void restaure() {
-        try {
-            FileInputStream fichier = new FileInputStream("Fsauvserv.ser");
-            ObjectInputStream in = new ObjectInputStream(fichier);
-            //private static final long serialVersionUID = 1L;
-            utilisateurs = (HashMap<String, Users>) in.readObject();
-            rooms = (HashMap<String, Room>) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            MessageErreur dialog = new MessageErreur();
-            dialog.setText("Probleme de restauration");
+    
+    public void renvoi(Message mss) {
+        for(TraitementClient thread : listThread) {
+            thread.renvoi(mss);
         }
+    }
+    
+    public void renvoi(Message mss, String room, TraitementClient th) {
+        for(TraitementClient thread : listThread) {
+            if(room.equals(thread.getRoom()) && !th.equals(thread))
+            {
+            thread.renvoi(mss);
+            }
+            else
+            {
+            thread.renvoi(new Message("", "", message.MotCle.CONNECTIONROOM, this.rooms));
+            }
+        }
+    }
+    
+    public void renvoi(Message mss, TraitementClient th) {
+        for(TraitementClient thread : listThread) {
+            if(!th.equals(thread))
+            {
+            thread.renvoi(mss);
+            }
+        }
+    }
+    
+    public Serveur restaure() 
+    {
+            try
+            {
+                FileInputStream fichier = new FileInputStream("Fsauvserv.ser");
+                ObjectInputStream in = new ObjectInputStream(fichier);
+                //private static final long serialVersionUID = 1L;
+                return((Serveur) in.readObject());
+            } 
+            catch (Exception e) 
+            {
+                    MessageErreur dialog = new MessageErreur();
+                    dialog.setText("Probleme de restauration");
+                    return this;
+            } 
     }
 
     public void sauve() {

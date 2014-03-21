@@ -21,26 +21,35 @@ import message.Message;
 import java.io.OutputStream;
 import message.MotCle;
 import java.util.HashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import serveur.TraitementClient;
+import Users.Users;
+import Rooms.Room;
 
 /**
  *
  * @author ponsma
  */
 
-public class Compte implements Serializable {
+public class Compte {
 
-    private static final long serialVersionUID = 1L;
-    private ArrayList<String> pseudos;
-    private ArrayList<String> serveurs;
+    private HashMap<String, Users> usersserv;
+    private HashMap<String, Room> serveurs;
     private ImageIcon img;
+    private SauvegardePseudo save;
+    private ThreadEcouteGlobal th;
 
-    private final Integer port;
-    private final String host;
+    private Integer port;
+    private String host;
     private Socket socket;
     private OutputStream out;
     private ObjectOutputStream sortie;
     private InputStream in;
     private ObjectInputStream entree;
+
+    public SauvegardePseudo getSave() {
+        return save;
+    }
 
     public ObjectInputStream getEntree() {
         return entree;
@@ -49,13 +58,15 @@ public class Compte implements Serializable {
     public boolean ConnectionVerifPseudo(String pseudo) {
         boolean pris = true;
         try {
-            this.ouvrirSocket();
             if (this.getOuvert()) {
-                this.ouvrirStream();
                 this.ecrire(pseudo, "", message.MotCle.VERIFICATIONPSEUDO);
                 Message mss2 = (Message) entree.readObject();
                 if (mss2.getMotCle() == message.MotCle.VERIFICATIONPSEUDO) {
-                    pris = mss2.getMessage().contains("oui");
+                    if (mss2.getMessage().contains("oui")) {
+                        pris = true;
+                    } else {
+                        pris = false;
+                    }
                 }
             }
 
@@ -67,56 +78,36 @@ public class Compte implements Serializable {
 
     public void ConnectionEcrire(String mesage) {
         if (this.getOuvert()) {
-            this.ecrire((String) this.getPseudos().get(this.getPseudos().size() - 1), mesage, message.MotCle.MESSAGE);
+            this.ecrire((String) this.getSave().getPseudos().get(this.getSave().getPseudos().size() - 1), mesage, message.MotCle.MESSAGE);
+        }
+    }
+    
+    public void ConnectionEcrireGlobal(String mesage) {
+        if (this.getOuvert()) {
+            this.ecrire((String) this.getSave().getPseudos().get(this.getSave().getPseudos().size() - 1), mesage, message.MotCle.MESSAGEGLOBAL);
         }
     }
 
-    public void ConnectionRoom(String room) {
+    public void ConnectionRoom(String room, TchatCreationServeur tchat) {
         if (this.getOuvert()) {
-            if (this.serveurs.contains(room)) {
-                //System.out.println("entrée ici 1");
+            if (this.serveurs.containsKey(room)) {
                 this.ecrire("", room, message.MotCle.CONNECTIONROOM);
             } else {
-                //System.out.println("entrée ici 2");
-                this.ecrire(this.pseudos.get(this.pseudos.size() - 1), room, message.MotCle.CREATIONROOM);
+                this.ecrire(this.getSave().getPseudos().get(this.getSave().getPseudos().size() - 1), room, message.MotCle.CREATIONROOM);
             }
         }
     }
 
     public void demandeRoom() {
-        try {
             if (this.getOuvert()) {
-                this.ecrire("", "", message.MotCle.DEMANDEROOMS);
-
-                Message mss2 = (Message) entree.readObject();
-                if (mss2.getMotCle() == MotCle.ENVOIROOMS) {
-                    for (String roo : ((HashMap<String, Room>) mss2.getDonnees()).keySet()) {
-                        if (!this.serveurs.contains(roo)) {
-                            this.setServeur(roo);
-                        }
-                    }
-                }
-            }
-        } catch (IOException | ClassNotFoundException ex) {
-            Logger.getLogger(Compte.class.getName()).log(Level.SEVERE, null, ex);
+                this.ecrire(this.getSave().getPseudos().get(this.getSave().getPseudos().size() - 1), "", message.MotCle.DEMANDEROOMS);
         }
     }
 
-    public void demandeUsersRoom(String room, Tchat tchat) {
-        try {
-            if (this.getOuvert()) {
-                this.ecrire("", room, message.MotCle.DEMANDEUSERSROOM);
+    public void demandeUsersServeur(TchatCreationServeur tchat) {
+        if (this.getOuvert()) {
+            this.ecrire("", "", message.MotCle.DEMANDEUSERSSERVEUR);
 
-                Message mss2 = (Message) entree.readObject();
-                if (mss2.getMotCle() == MotCle.ENVOIUSERSROOM) {
-                    for (String user : ((ArrayList<String>) mss2.getDonnees())) {
-                        tchat.setUser(user);
-                    }
-
-                }
-            }
-        } catch (IOException | ClassNotFoundException ex) {
-            Logger.getLogger(Compte.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -176,9 +167,13 @@ public class Compte implements Serializable {
         }
     }
 
-    public void creerThread(Tchat tchat) {
-        ThreadEcoute thread = new ThreadEcoute(tchat);
-        thread.start();
+    public void lireRoom(Tchat tchat) {
+        th.setTchat(tchat);
+    }
+
+    public void lireGlobal(TchatCreationServeur tchat) {
+        th = new ThreadEcouteGlobal(tchat);
+        th.start();
     }
 
     public void setImage(ImageIcon i) {
@@ -190,50 +185,38 @@ public class Compte implements Serializable {
     }
 
     public Compte() {
-        pseudos = new ArrayList();
-        serveurs = new ArrayList();
+        save = new SauvegardePseudo().restaure();
+        serveurs = new HashMap();
+        usersserv = new HashMap();
         port = 51569;
         host = "localhost";
+        this.ouvrirSocket();
+            if (this.getOuvert()) 
+                this.ouvrirStream();
     }
 
-    public ArrayList getPseudos() {
-        return pseudos;
+    public void setPort(Integer port) {
+        this.port = port;
     }
 
-    public void setPseudo(String pseudo) {
-        pseudos.add(pseudo);
+    public void setHost(String host) {
+        this.host = host;
     }
 
-    public ArrayList getServeurs() {
+    public HashMap<String, Room> getServeurs() {
         return serveurs;
     }
 
-    public void setServeur(String serveur) {
-        serveurs.add(serveur);
+    public HashMap<String, Users> getUsers() {
+        return usersserv;
     }
 
-    Compte restaure() {
-        try {
-            FileInputStream fichier = new FileInputStream("Fsauv.ser");
-            ObjectInputStream in = new ObjectInputStream(fichier);
-            //private static final long serialVersionUID = 1L;
-            return ((Compte) in.readObject());
-        } catch (Exception e) {
-            MessageErreur dialog = new MessageErreur();
-            dialog.setText("Probleme de restauration");
-            return this;
-        }
+    public void setUsers(HashMap<String, Users> users) {
+        usersserv = users;
     }
 
-    void sauve() {
-        try {
-            FileOutputStream f = new FileOutputStream("Fsauv.ser");
-            ObjectOutputStream out = new ObjectOutputStream(f);
-            out.writeObject(this);
-        } catch (Exception e) {
-            MessageErreur dialog = new MessageErreur();
-            dialog.setText("Pb de Sauvegarde dans le fichier");
-        }
+    public void setServeurs(HashMap<String, Room> serveurs) {
+        this.serveurs = serveurs;
     }
 
 }

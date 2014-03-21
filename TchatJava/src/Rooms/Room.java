@@ -4,13 +4,12 @@
  * and open the template in the editor.
  */
 
-package tchatjava;
+package Rooms;
 
 /**
  *
  * @author mouah
  */
-import serveur.*;
 import java.io.Serializable;
 import java.util.*;
 
@@ -22,6 +21,8 @@ public class Room implements Serializable {
     public Room(String administrateur)
     {
         this.administrateur = administrateur;
+        utilisateurs = new ArrayList<String>();
+        utilisateurs.add(administrateur);
     }
             
     public void setUtilisateur(String utilisateur)
