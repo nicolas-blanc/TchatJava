@@ -39,8 +39,8 @@ public class Serveur extends Thread implements Serializable {
         this.port = port;
         this.setUtilisateurs(new HashMap<String, Users>());
         this.setRooms(new HashMap<String, Room>());
-        restaure();
         listThread = new LinkedBlockingQueue();
+        restaure();
         ouvrirEcoute();
     }
 
