@@ -89,38 +89,7 @@ public class TraitementClient extends Thread {
                 Message mss;
                 try {
                     mss = (Message) entree.readObject();
-                    if (mss.getMotCle() == CLOSE) {
-                        nonfin = false;
-                    } else if (mss.getMotCle() == message.MotCle.MESSAGE) {
-                        transfertMessage(mss);
-                    } else if (mss.getMotCle() == message.MotCle.CREATIONROOM) {
-                        serveur.setRoom(mss.getMessage(), pseudo);
-                        //ici getMessage() retourne le nom de la salle.
-                        this.room = mss.getMessage();
-                    } else if (mss.getMotCle() == message.MotCle.CONNECTIONROOM) {
-                        if (!serveur.getRooms().get(mss.getMessage()).getUtilisateurs().contains(pseudo)) {
-                            serveur.getRooms().get(mss.getMessage()).setUtilisateur(pseudo);
-                        }
-                        //ici getMessage() retourne le nom de la salle.
-                        this.room = mss.getMessage();
-                        this.transfertMessage(new Message(pseudo, "", MotCle.USERCONNECTIONROOM));
-                    } else if (mss.getMotCle() == message.MotCle.DEMANDEROOMS) {
-                        this.renvoi(new Message("", "", message.MotCle.ENVOIROOMS, serveur.getRooms()));
-                    } else if (mss.getMotCle() == message.MotCle.DEMANDEUSERSROOM) {
-                        this.renvoi(new Message("", "", message.MotCle.ENVOIUSERSROOM, serveur.getRooms().get(mss.getMessage()).getUtilisateurs()));
-                    } else if (mss.getMotCle() == message.MotCle.VERIFICATIONPSEUDO) {
-                        if (serveur.getUtilisateurs().containsKey(mss.getPseudo())) {
-                            this.renvoi(new Message("", "oui", message.MotCle.VERIFICATIONPSEUDO));
-                        } else {
-                            this.renvoi(new Message("", "non", message.MotCle.VERIFICATIONPSEUDO));
-                            serveur.setUtilisateur(mss.getPseudo());
-                            this.pseudo = mss.getPseudo();
-                        }
-                    } else {
-                        //déconnection client
-                        System.out.println("erreur");
-                    }
-                } catch (IOException ex) {
+                    if(mss.getMotCle() == CLOSE)
                     nonfin = false;
                 else if(mss.getMotCle() == message.MotCle.MESSAGE)
                     transfertMessage(mss);
@@ -176,6 +145,9 @@ public class TraitementClient extends Thread {
                 {
                     //déconnection client
                     System.out.println("erreur");
+                    }
+                } catch (IOException ex) {
+                    nonfin = false;
                 }
             }
         } catch (ClassNotFoundException ex) {
