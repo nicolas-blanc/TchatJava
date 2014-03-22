@@ -119,7 +119,10 @@ public class TchatCreationCompte extends javax.swing.JFrame {
 
         Integer port = Integer.parseInt(jTextField1.getText());
         String host = jTextField2.getText();
-
+        
+        if(port!=null && !host.isEmpty())
+        {
+        compt.connexionServeur(port, host);
         boolean pris = false;
         if (!((String) jComboBox1.getSelectedItem()).isEmpty()) {
             pseudo = (String) jComboBox1.getSelectedItem();
@@ -131,7 +134,6 @@ public class TchatCreationCompte extends javax.swing.JFrame {
             if (!pris) {
                 compt.getSave().setPseudo(pseudo);
                 compt.getSave().sauve();
-                compt.connexionServeur(port, host);
                 this.dispose();
                 TchatCreationServeur tcs = new TchatCreationServeur(this, true, compt);
                 tcs.setVisible(true);
@@ -144,6 +146,7 @@ public class TchatCreationCompte extends javax.swing.JFrame {
             MessageErreur d = new MessageErreur();
             d.setText("Vous devez mettre un pseudo.");
             d.setVisible(true);
+        }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

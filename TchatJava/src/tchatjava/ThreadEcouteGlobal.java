@@ -39,6 +39,10 @@ public class ThreadEcouteGlobal extends Thread {
                 } else if (mss2.getMotCle() == MotCle.USERCONNECTIONSERVEUR) {
                     tchat.getCompte().setUsers((HashMap<String, Users>) mss2.getDonnees());
                     tchat.miseajourconnecte();
+                    for(String us : tchat.getCompte().getUsers().keySet())
+                    {
+                        System.out.println(us);
+                    }
                 } else if (mss2.getMotCle() == MotCle.ENVOIROOMS) {
                     tchat.getCompte().setServeurs((HashMap<String, Room>) mss2.getDonnees());
                 } else if (mss2.getMotCle() == MotCle.CREATIONROOM) {

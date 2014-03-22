@@ -114,6 +114,10 @@ public class TraitementClient extends Thread {
                     //ici getMessage() retourne le nom de la salle.
                     this.room = mss.getMessage();
                     
+                    for(String useers : serveur.getRooms().get(room).getUtilisateurs())
+                    {
+                        System.out.println(useers);
+                    }
                     serveur.renvoi(new Message(pseudo,"", MotCle.CONNECTIONROOM, serveur.getRooms()));
                 }
                 else if(mss.getMotCle() == message.MotCle.DEMANDEROOMS)

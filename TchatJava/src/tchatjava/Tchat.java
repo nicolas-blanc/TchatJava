@@ -45,8 +45,11 @@ public class Tchat extends javax.swing.JDialog {
     
     public void miseajour()
     {
-        jList1.setModel(new javax.swing.DefaultComboBoxModel(compt.getServeurs().get(this.room).getUtilisateurs().toArray()));
-        jList2.setModel(new javax.swing.DefaultComboBoxModel(compt.getServeurs().get(this.room).getUtilisateurs().toArray()));
+        jList1.setModel(new javax.swing.DefaultComboBoxModel(compt.getServeurs()
+                .get(this.room).getUtilisateurs().toArray()));
+        
+        jList2.setModel(new javax.swing.DefaultComboBoxModel(compt.getServeurs()
+                .get(this.room).getUtilisateurs().toArray()));
         if(compt.getSave().getPseudos().get(compt.getSave().getPseudos().size()-1) == compt.getServeurs().get(room).getAdministrateur())
         {
             jPanel2.setVisible(true);
@@ -140,18 +143,8 @@ public class Tchat extends javax.swing.JDialog {
         jButton4.setText("Enregistrer");
         jButton4.setEnabled(false);
 
-        jList2.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane4.setViewportView(jList2);
 
-        jList3.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane5.setViewportView(jList3);
 
         jButton6.setText("debannir");
