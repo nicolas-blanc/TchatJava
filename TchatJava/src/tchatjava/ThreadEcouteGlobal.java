@@ -62,6 +62,10 @@ public class ThreadEcouteGlobal extends Thread {
                     case MESSAGE :
                         tchat1.setJtextpanel(mss2);
                         break;
+                    default:
+                            //déconnection client
+                            System.out.println("erreur");
+                            break;
                 }
             }
         } catch (IOException | ClassNotFoundException ex) {
