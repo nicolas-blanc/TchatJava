@@ -32,21 +32,16 @@ public class Serveur extends Thread implements Serializable {
     private ServerSocket socket_ecoute;
     private Socket socket_transfert;
     private LinkedBlockingQueue<TraitementClient> listThread;
-    private HashMap<String, Users> utilisateurs; 
-    private HashMap<String, Room> rooms;
     private ArrayList<String> connectes;
-    private ArrayList<String> banis;
     private InfoServeur info;
+    private Sauvegarde sauvegarde;
 
     public Serveur(Integer port) {
         info = null;
         this.port = port;
         connectes = new ArrayList<>();
-        banis = new ArrayList<>(); 
-        this.setUtilisateurs(new HashMap<String, Users>());
-        this.setRooms(new HashMap<String, Room>());
         listThread = new LinkedBlockingQueue();
-        restaure();
+        sauvegarde = new Sauvegarde().restaure();
         ouvrirEcoute();
     }
     
@@ -73,12 +68,12 @@ public class Serveur extends Thread implements Serializable {
     
     public ArrayList<String> getBanis()
     {
-        return banis;
+        return sauvegarde.getBanis();
     }
     
     public void setBanis(String pseudo)
     {
-            banis.add(pseudo);
+            sauvegarde.setBanis(pseudo);
     }
 
     @Override
@@ -87,7 +82,7 @@ public class Serveur extends Thread implements Serializable {
     }
 
     public HashMap<String, Users> getUtilisateurs() {
-        return utilisateurs;
+        return sauvegarde.getUtilisateurs();
     }
     
     public ArrayList<String> transformationSetArrayList(Set<String> users)
@@ -101,23 +96,15 @@ public class Serveur extends Thread implements Serializable {
     }
 
     public void setUtilisateur(String pseudo) {
-        utilisateurs.put(pseudo, new Users());
-    }
-
-    private void setUtilisateurs(HashMap<String, Users> users) {
-        utilisateurs = users;
+        sauvegarde.getUtilisateurs().put(pseudo, new Users());
     }
 
     public HashMap<String, Room> getRooms() {
-        return rooms;
+        return sauvegarde.getRooms();
     }
 
     public void setRoom(String room, String pseudo) {
-        rooms.put(room, new Room(pseudo));
-    }
-
-    private void setRooms(HashMap<String, Room> rooms) {
-        this.rooms = rooms;
+        sauvegarde.getRooms().put(room, new Room(pseudo));
     }
     
     public String getIp() {
@@ -127,6 +114,11 @@ public class Serveur extends Thread implements Serializable {
     public String getPort() {
         Integer p = socket_ecoute.getLocalPort();
         return p.toString();
+    }
+    
+    public Sauvegarde getSauve()
+    {
+        return sauvegarde;
     }
 
     private void ouvrirEcoute() {
@@ -182,35 +174,6 @@ public class Serveur extends Thread implements Serializable {
             {
             thread.renvoi(mss);
             }
-        }
-    }
-    
-    public Serveur restaure() 
-    {
-            try
-            {
-                FileInputStream fichier = new FileInputStream("Fsauvserv.ser");
-                ObjectInputStream in = new ObjectInputStream(fichier);
-                //private static final long serialVersionUID = 1L;
-                return((Serveur) in.readObject());
-            } 
-            catch (Exception e) 
-            {
-                    MessageErreur dialog = new MessageErreur();
-                    dialog.setText("Probleme de restauration");
-                    return this;
-            } 
-    }
-
-    public void sauve() {
-        try {
-            FileOutputStream f = new FileOutputStream("Fsauvserv.ser");
-            ObjectOutputStream out = new ObjectOutputStream(f);
-            out.writeObject(utilisateurs);
-            out.writeObject(rooms);
-        } catch (IOException e) {
-            MessageErreur dialog = new MessageErreur();
-            dialog.setText("Pb de Sauvegarde dans le fichier");
         }
     }
 

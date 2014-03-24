@@ -103,16 +103,7 @@ public class TraitementClient extends Thread {
                             break;
                         case CREATIONROOM:
                             serveur.setRoom(mss.getMessage(), pseudo);
-                            //ici getMessage() retourne le nom de la salle.
                             this.room = mss.getMessage();
-                            for(String ro : serveur.getRooms().keySet())
-                            {
-                                System.out.println(ro);
-                                for(String Us : serveur.getRooms().get(ro).getUtilisateurs())
-                                {
-                                    System.out.println(" ------------- " + Us);
-                                }
-                            }
                             serveur.renvoi(new Message("", room, message.MotCle.CONNECTIONROOM, serveur.getRooms()));
                             break;
                         case CONNECTIONROOM:

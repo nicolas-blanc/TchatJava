@@ -181,7 +181,7 @@ public class InfoServeur extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.getParent().setVisible(true);
-        serveur.sauve();
+        serveur.getSauve().sauve();
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
