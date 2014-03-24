@@ -6,6 +6,7 @@
 package tchatjava;
 
 import message.Message;
+import javax.swing.*;
 
 /**
  *
@@ -16,6 +17,7 @@ public class Tchat extends javax.swing.JDialog {
     private boolean admin;
     private Compte compt;
     private String room;
+    private DefaultListModel<String> model1;
 
     /**
      * Creates new form Tchat
@@ -32,16 +34,32 @@ public class Tchat extends javax.swing.JDialog {
         super(parent, modal);
         this.room = room;
         compt = c;
+        model1 = new DefaultListModel<>();
         compt.lireRoom(this);
         initComponents();
 
     }
 
     public void miseajour() {
-        if(!compt.getServeurs().get(this.room).getUtilisateurs().isEmpty())
+        for(String ro : compt.getServeurs().keySet())
         {
-        jList1.setListData(compt.getServeurs().get(this.room).getUtilisateurs().toArray());
-        jList2.setListData(compt.getServeurs().get(this.room).getUtilisateurs().toArray());
+            System.out.println(ro);
+            for(String us : compt.getServeurs().get(ro).getUtilisateurs())
+            {
+                System.out.println(us);
+            }
+        }
+        if(!compt.getServeurs().isEmpty())
+        {
+            for(int i = 0; i < model1.getSize(); i++)
+            {
+                model1.remove(i);
+            }
+            for(String us : compt.getServeurs().get(room).getUtilisateurs())
+            {
+                model1.addElement(us);
+            }
+                 
         if (compt.getSave().getPseudos().get(compt.getSave().getPseudos().size() - 1).equals(compt.getServeurs().get(room).getAdministrateur())) {
             jPanel2.setVisible(true);
             jTextField2.setEditable(true);
@@ -92,6 +110,7 @@ public class Tchat extends javax.swing.JDialog {
             }
         });
 
+        jList1.setModel(model1);
         jScrollPane3.setViewportView(jList1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -138,6 +157,7 @@ public class Tchat extends javax.swing.JDialog {
         jButton4.setText("Enregistrer");
         jButton4.setEnabled(false);
 
+        jList2.setModel(model1);
         jScrollPane4.setViewportView(jList2);
 
         jScrollPane5.setViewportView(jList3);

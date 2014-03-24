@@ -93,6 +93,7 @@ public class TraitementClient extends Thread {
                         case CLOSE:
                             nonfin = false;
                             serveur.getConnectes().remove(pseudo);
+                            serveur.getInfoServeur().miseAJourUtilisateurs();
                             break;
                         case MESSAGE:
                             transfertMessage(mss);
@@ -104,7 +105,15 @@ public class TraitementClient extends Thread {
                             serveur.setRoom(mss.getMessage(), pseudo);
                             //ici getMessage() retourne le nom de la salle.
                             this.room = mss.getMessage();
-                            serveur.renvoi(new Message("", room, message.MotCle.CREATIONROOM, serveur.getRooms()));
+                            for(String ro : serveur.getRooms().keySet())
+                            {
+                                System.out.println(ro);
+                                for(String Us : serveur.getRooms().get(ro).getUtilisateurs())
+                                {
+                                    System.out.println(" ------------- " + Us);
+                                }
+                            }
+                            serveur.renvoi(new Message("", room, message.MotCle.CONNECTIONROOM, serveur.getRooms()));
                             break;
                         case CONNECTIONROOM:
                             if (!serveur.getRooms().get(mss.getMessage()).getUtilisateurs().contains(pseudo)) {

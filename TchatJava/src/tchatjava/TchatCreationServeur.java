@@ -9,6 +9,7 @@ package tchatjava;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import java.awt.Image; 
+import javax.swing.DefaultListModel;
 import message.Message;
 
 /**
@@ -21,6 +22,8 @@ public class TchatCreationServeur extends javax.swing.JDialog {
     private ArrayList<String> users;
     private final Compte compt;
     private String image;
+    private DefaultListModel<String> modelUsers;
+    private DefaultListModel<String> modelRoom;
     
     public Compte getCompte()
     {
@@ -45,7 +48,10 @@ public class TchatCreationServeur extends javax.swing.JDialog {
      */
     public TchatCreationServeur(java.awt.Frame parent, boolean modal, Compte c) {
         super(parent, modal);
+        this.setModal(false);
         compt = c;
+        modelRoom = new DefaultListModel<String>();
+        modelUsers = new DefaultListModel<String>();
         compt.lireGlobal(this);
         compt.demandeRoom();
         initComponents();
@@ -64,13 +70,26 @@ public class TchatCreationServeur extends javax.swing.JDialog {
     
     public void miseajourrooms()
     {
-        if(!compt.getServeurs().isEmpty())
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(compt.getServeurs().keySet().toArray()));
+            for(int i = 0; i < modelRoom.getSize(); i++)
+            {
+                modelRoom.remove(i);
+            }
+            for(String ro : compt.getServeurs().keySet())
+            {
+                modelRoom.addElement(ro);
+            }
     }
     
     public void miseajourconnecte()
     {
-        jList1.setListData(compt.getUsers().toArray());
+        for(int i = 0; i < modelUsers.getSize(); i++)
+            {
+                modelUsers.remove(i);
+            }
+            for(String us : compt.getUsers())
+            {
+                modelUsers.addElement(us);
+            }
     }
     
     public void setImage(String img)
@@ -309,8 +328,8 @@ public class TchatCreationServeur extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        compt.ConnectionRoom((String)jComboBox1.getSelectedItem(), this);
         Tchat t = new Tchat(padres, true, compt, (String)jComboBox1.getSelectedItem());
+        compt.ConnectionRoom((String)jComboBox1.getSelectedItem(), this);
         t.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
