@@ -34,14 +34,51 @@ public class Serveur extends Thread implements Serializable {
     private LinkedBlockingQueue<TraitementClient> listThread;
     private HashMap<String, Users> utilisateurs; 
     private HashMap<String, Room> rooms;
+    private ArrayList<String> connectes;
+    private ArrayList<String> banis;
+    private InfoServeur info;
 
     public Serveur(Integer port) {
+        info = null;
         this.port = port;
+        connectes = new ArrayList<>();
+        banis = new ArrayList<>(); 
         this.setUtilisateurs(new HashMap<String, Users>());
         this.setRooms(new HashMap<String, Room>());
         listThread = new LinkedBlockingQueue();
         restaure();
         ouvrirEcoute();
+    }
+    
+    public void setInfoServeur(InfoServeur info)
+    {
+        this.info = info;
+    }
+    
+    public InfoServeur getInfoServeur()
+    {
+        return info;
+    }
+    
+    public ArrayList<String> getConnectes()
+    {
+        return connectes;
+    }
+    
+    public void setConnecte(String pseudo)
+    {
+        if(!connectes.contains(pseudo))
+            connectes.add(pseudo);
+    }
+    
+    public ArrayList<String> getBanis()
+    {
+        return banis;
+    }
+    
+    public void setBanis(String pseudo)
+    {
+            banis.add(pseudo);
     }
 
     @Override
@@ -136,19 +173,6 @@ public class Serveur extends Thread implements Serializable {
     public void renvoi(Message mss) {
         for(TraitementClient thread : listThread) {
             thread.renvoi(mss);
-        }
-    }
-    
-    public void renvoi(Message mss, String room, TraitementClient th) {
-        for(TraitementClient thread : listThread) {
-            if(room.equals(thread.getRoom()) && !th.equals(thread))
-            {
-            thread.renvoi(mss);
-            }
-            else
-            {
-            thread.renvoi(new Message("", "", message.MotCle.CONNECTIONROOM, this.rooms));
-            }
         }
     }
     

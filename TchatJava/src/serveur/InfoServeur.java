@@ -5,6 +5,7 @@
  */
 package serveur;
 
+import message.*;
 /**
  *
  * @author blancn
@@ -23,10 +24,24 @@ public class InfoServeur extends javax.swing.JDialog {
         this.getParent().setVisible(false);
         miseAJour();
         this.setVisible(true);
+        
     }
+    
+    public void miseAJourUtilisateurs()
+    {
+        jList1.setModel(new javax.swing.DefaultComboBoxModel(serveur.getUtilisateurs().keySet().toArray()));
+    }
+    
+    public void miseAJourBanis()
+    {
+        jList2.setModel(new javax.swing.DefaultComboBoxModel(serveur.getBanis().toArray()));
+    }
+    
+    
 
     private void creerServeur(Integer port) {
         serveur = new Serveur(port);
+        serveur.setInfoServeur(this);
         serveur.start();
     }
     
@@ -59,11 +74,6 @@ public class InfoServeur extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane1.setViewportView(jList1);
 
         jLabel1.setText("Serveur en cours d'éxécution");
@@ -72,11 +82,6 @@ public class InfoServeur extends javax.swing.JDialog {
 
         jLabel3.setText("Ban liste");
 
-        jList2.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane2.setViewportView(jList2);
 
         jButton1.setText("Eteindre");
@@ -108,13 +113,13 @@ public class InfoServeur extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addGap(71, 317, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jScrollPane1)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(18, 18, 18)
@@ -164,6 +169,14 @@ public class InfoServeur extends javax.swing.JDialog {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        if(!((String)jList1.getSelectedValue()).isEmpty())
+        {
+            serveur.getConnectes().remove((String)jList1.getSelectedValue());
+            serveur.setBanis((String)jList1.getSelectedValue());
+            this.miseAJourBanis();
+            this.miseAJourUtilisateurs();
+            serveur.renvoi(new Message("","",message.MotCle.USERCONNECTIONSERVEUR, serveur.getConnectes()));
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

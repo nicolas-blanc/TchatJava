@@ -3,13 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package tchatjava;
 
 import message.Message;
-import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
-import serveur.TraitementClient;
+
 /**
  *
  * @author MouaHH
@@ -19,40 +16,38 @@ public class Tchat extends javax.swing.JDialog {
     private boolean admin;
     private Compte compt;
     private String room;
-    
+
     /**
      * Creates new form Tchat
      */
-    
-    public Compte getCompte()
-    {
+    public Compte getCompte() {
         return compt;
     }
-    
-    public String getRoom()
-    {
+
+    public String getRoom() {
         return room;
     }
-    
+
     public Tchat(java.awt.Frame parent, boolean modal, Compte c, String room) {
         super(parent, modal);
         this.room = room;
         compt = c;
         compt.lireRoom(this);
         initComponents();
-       
+
     }
-    
-    public void miseajour()
-    {
-        jList1.setModel(new javax.swing.DefaultComboBoxModel(compt.getServeurs()
-                .get(this.room).getUtilisateurs().toArray()));
-        
-        jList2.setModel(new javax.swing.DefaultComboBoxModel(compt.getServeurs()
-                .get(this.room).getUtilisateurs().toArray()));
-        if(compt.getSave().getPseudos().get(compt.getSave().getPseudos().size()-1) == compt.getServeurs().get(room).getAdministrateur())
+
+    public void miseajour() {
+        if(!compt.getServeurs().get(this.room).getUtilisateurs().isEmpty())
         {
+        jList1.setListData(compt.getServeurs().get(this.room).getUtilisateurs().toArray());
+        jList2.setListData(compt.getServeurs().get(this.room).getUtilisateurs().toArray());
+        if (compt.getSave().getPseudos().get(compt.getSave().getPseudos().size() - 1).equals(compt.getServeurs().get(room).getAdministrateur())) {
             jPanel2.setVisible(true);
+            jTextField2.setEditable(true);
+            jButton3.setEnabled(true);
+            jButton4.setEnabled(true);
+        }
         }
     }
 
@@ -231,13 +226,15 @@ public class Tchat extends javax.swing.JDialog {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        if(!jTextField1.getText().isEmpty())
-        compt.ConnectionEcrire(jTextField1.getText());
+        if (!jTextField1.getText().isEmpty()) {
+            compt.ConnectionEcrire(jTextField1.getText());
+        }
         jTextField1.setText("");
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        compt.lireRoom(null);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -283,12 +280,11 @@ public class Tchat extends javax.swing.JDialog {
         });
     }
 
-    public void setJtextpanel(Message mss)
-    {
-        jTextPane1.setText(jTextPane1.getText()+mss.getPseudo() + " --- " + mss.getMessage()+'\n');
+    public void setJtextpanel(Message mss) {
+        jTextPane1.setText(jTextPane1.getText() + mss.getPseudo() + " --- " + mss.getMessage() + '\n');
     }
-            
-    
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;

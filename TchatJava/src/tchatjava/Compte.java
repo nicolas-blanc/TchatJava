@@ -19,6 +19,7 @@ import message.MotCle;
 import java.util.HashMap;
 import Users.Users;
 import Rooms.Room;
+import java.util.ArrayList; 
 
 /**
  *
@@ -27,7 +28,7 @@ import Rooms.Room;
 
 public class Compte {
 
-    private HashMap<String, Users> usersserv;
+    private ArrayList<String> usersserv;
     private HashMap<String, Room> serveurs;
     private ImageIcon img;
     private SauvegardePseudo save;
@@ -43,8 +44,8 @@ public class Compte {
 
     public Compte() {
         save = new SauvegardePseudo().restaure();
-        serveurs = new HashMap();
-        usersserv = new HashMap();
+        serveurs = new HashMap<String, Room>();
+        usersserv = new ArrayList<String>();
     }
     
     public void connexionServeur(Integer port, String host) {
@@ -109,13 +110,6 @@ public class Compte {
     public void demandeRoom() {
             if (this.getOuvert()) {
                 this.ecrire(this.getSave().getPseudos().get(this.getSave().getPseudos().size() - 1), "", message.MotCle.DEMANDEROOMS);
-        }
-    }
-
-    public void demandeUsersServeur(TchatCreationServeur tchat) {
-        if (this.getOuvert()) {
-            this.ecrire("", "", message.MotCle.DEMANDEUSERSSERVEUR);
-
         }
     }
 
@@ -204,11 +198,11 @@ public class Compte {
         return serveurs;
     }
 
-    public HashMap<String, Users> getUsers() {
+    public ArrayList<String> getUsers() {
         return usersserv;
     }
 
-    public void setUsers(HashMap<String, Users> users) {
+    public void setUsers(ArrayList<String> users) {
         usersserv = users;
     }
 

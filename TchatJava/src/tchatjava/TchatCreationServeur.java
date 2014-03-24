@@ -48,7 +48,6 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         compt = c;
         compt.lireGlobal(this);
         compt.demandeRoom();
-        compt.demandeUsersServeur(this);
         initComponents();
         if(compt.getImage()!=null)
         {
@@ -65,12 +64,13 @@ public class TchatCreationServeur extends javax.swing.JDialog {
     
     public void miseajourrooms()
     {
+        if(!compt.getServeurs().isEmpty())
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(compt.getServeurs().keySet().toArray()));
     }
     
     public void miseajourconnecte()
     {
-        jList1.setModel(new javax.swing.DefaultComboBoxModel(compt.getUsers().keySet().toArray()));
+        jList1.setListData(compt.getUsers().toArray());
     }
     
     public void setImage(String img)
@@ -158,6 +158,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Connexion", jPanel2);
 
+        jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
 
         jButton3.setText("Envoyer");
@@ -167,7 +168,6 @@ public class TchatCreationServeur extends javax.swing.JDialog {
             }
         });
 
-        jList1.setModel(new javax.swing.DefaultComboBoxModel(compt.getUsers().keySet().toArray()));
         jScrollPane2.setViewportView(jList1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

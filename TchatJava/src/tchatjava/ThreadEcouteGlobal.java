@@ -6,13 +6,11 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import message.Message;
-import message.MotCle;
-import Users.Users;
 import Rooms.Room;
 
 public class ThreadEcouteGlobal extends Thread {
 
-    private TchatCreationServeur tchat;
+    private final TchatCreationServeur tchat;
     private Tchat tchat1;
 
     public ThreadEcouteGlobal(TchatCreationServeur tchat) {
@@ -34,38 +32,37 @@ public class ThreadEcouteGlobal extends Thread {
             while (tchat.getCompte().getOuvert()) {
                 //Scanner sc = new Scanner(System.in);
                 Message mss2 = (Message) tchat.getCompte().getEntree().readObject();
-                switch(mss2.getMotCle())
-                {
+                switch (mss2.getMotCle()) {
                     case MESSAGEGLOBAL:
                         tchat.setJtextpanel(mss2);
                         break;
-                    case USERCONNECTIONSERVEUR :
-                        tchat.getCompte().setUsers((HashMap<String, Users>) mss2.getDonnees());
+                    case USERCONNECTIONSERVEUR:
+                        tchat.getCompte().setUsers((ArrayList<String>) mss2.getDonnees());
                         tchat.miseajourconnecte();
                         break;
-                    case ENVOIROOMS :
+                    case ENVOIROOMS:
                         tchat.getCompte().setServeurs((HashMap<String, Room>) mss2.getDonnees());
                         break;
-                    case CREATIONROOM :
-                        tchat.getCompte().setServeurs((HashMap<String, Room>) mss2.getDonnees());
-                        tchat.miseajourrooms();
-                        break;
-                    case ENVOIUSERSSERVEUR :
-                        tchat.getCompte().setUsers((HashMap<String, Users>) mss2.getDonnees());
-                        break;
-                    case CONNECTIONROOM :
+                    case CREATIONROOM:
                         tchat.getCompte().setServeurs((HashMap<String, Room>) mss2.getDonnees());
                         if (tchat1 != null) {
                             tchat1.miseajour();
                         }
                         break;
-                    case MESSAGE :
+                    case CONNECTIONROOM:
+                        tchat.getCompte().setServeurs((HashMap<String, Room>) mss2.getDonnees());
+                        if (tchat1 != null) {
+                            tchat1.miseajour();
+                        }
+                        break;
+                    case MESSAGE:
                         tchat1.setJtextpanel(mss2);
+                        tchat1.miseajour();
                         break;
                     default:
-                            //déconnection client
-                            System.out.println("erreur");
-                            break;
+                        //déconnection client
+                        System.out.println("erreur");
+                        break;
                 }
             }
         } catch (IOException | ClassNotFoundException ex) {

@@ -92,6 +92,7 @@ public class TraitementClient extends Thread {
                     switch (mss.getMotCle()) {
                         case CLOSE:
                             nonfin = false;
+                            serveur.getConnectes().remove(pseudo);
                             break;
                         case MESSAGE:
                             transfertMessage(mss);
@@ -103,7 +104,7 @@ public class TraitementClient extends Thread {
                             serveur.setRoom(mss.getMessage(), pseudo);
                             //ici getMessage() retourne le nom de la salle.
                             this.room = mss.getMessage();
-                            this.renvoi(new Message("", room, message.MotCle.CREATIONROOM, serveur.getRooms()));
+                            serveur.renvoi(new Message("", room, message.MotCle.CREATIONROOM, serveur.getRooms()));
                             break;
                         case CONNECTIONROOM:
                             if (!serveur.getRooms().get(mss.getMessage()).getUtilisateurs().contains(pseudo)) {
@@ -115,13 +116,10 @@ public class TraitementClient extends Thread {
                             break;
                         case DEMANDEROOMS:
                             this.pseudo = mss.getPseudo();
-
+                            serveur.setConnecte(pseudo);
                             this.renvoi(new Message("", "", message.MotCle.ENVOIROOMS, serveur.getRooms()));
-
-                            serveur.renvoi(new Message(pseudo, "", message.MotCle.USERCONNECTIONSERVEUR, serveur.getUtilisateurs()), this);
-                            break;
-                        case DEMANDEUSERSSERVEUR:
-                            this.renvoi(new Message("", "", MotCle.ENVOIUSERSSERVEUR, serveur.getUtilisateurs()));
+                            serveur.getInfoServeur().miseAJourUtilisateurs();
+                            serveur.renvoi(new Message("", "", message.MotCle.USERCONNECTIONSERVEUR, serveur.getConnectes()));
                             break;
                         case VERIFICATIONPSEUDO:
                             if (serveur.getUtilisateurs().containsKey(mss.getPseudo())) {
