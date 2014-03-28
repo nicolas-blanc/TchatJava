@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import message.Message;
+import message.MotCle;
 
 public class TraitementClient extends Thread {
 
@@ -102,7 +103,7 @@ public class TraitementClient extends Thread {
                         case CREATIONROOM:
                             serveur.setRoom(mss.getMessage(), pseudo);
                             this.room = mss.getMessage();
-                            serveur.renvoi(new Message("", room, message.MotCle.CONNECTIONROOM, serveur.getRooms()));
+                            serveur.renvoi(new Message(room, message.MotCle.CONNECTIONROOM, serveur.getRooms()));
                             break;
                         case CONNECTIONROOM:
                             if (!serveur.getRooms().get(mss.getMessage()).getUtilisateurs().contains(pseudo)) {
@@ -110,19 +111,22 @@ public class TraitementClient extends Thread {
                             }
                             //ici getMessage() retourne le nom de la salle.
                             this.room = mss.getMessage();
-                            serveur.renvoi(new Message(pseudo, "", message.MotCle.CONNECTIONROOM, serveur.getRooms()));
+                            serveur.renvoi(new Message(message.MotCle.CONNECTIONROOM, serveur.getRooms()));
                             break;
                         case DEMANDEROOMS:
                             this.pseudo = mss.getPseudo();
-                            this.renvoi(new Message("", "", message.MotCle.ENVOIROOMS, serveur.getRooms()));
-                            serveur.getInfoServeur().miseAJourUtilisateurs();
-                            serveur.renvoi(new Message("", "", message.MotCle.USERCONNECTIONSERVEUR, serveur.getConnecte()));
+                            if (!(bannis(pseudo))) {
+                                this.renvoi(new Message(message.MotCle.ENVOIROOMS, serveur.getRooms()));
+                                serveur.getInfoServeur().miseAJourUtilisateurs();
+                                serveur.renvoi(new Message(message.MotCle.USERCONNECTIONSERVEUR, serveur.getConnecte()));
+                            } else
+                                this.renvoi(new Message(MotCle.BAN));
                             break;
                         case VERIFICATIONPSEUDO:
                             if (serveur.getUtilisateurs().containsKey(mss.getPseudo())) {
-                                this.renvoi(new Message("", "oui", message.MotCle.VERIFICATIONPSEUDO));
+                                this.renvoi(new Message("oui", message.MotCle.VERIFICATIONPSEUDO));
                             } else {
-                                this.renvoi(new Message("", "non", message.MotCle.VERIFICATIONPSEUDO));
+                                this.renvoi(new Message("non", message.MotCle.VERIFICATIONPSEUDO));
                                 serveur.setUtilisateur(mss.getPseudo());
                                 this.pseudo = mss.getPseudo();
                             }
@@ -172,5 +176,9 @@ public class TraitementClient extends Thread {
     public void ban() {
         nonfin = false;
         renvoi(new Message(message.MotCle.BAN));
+    }
+    
+    public Boolean bannis(String ps) {
+        return serveur.getBannis().contains(ps);
     }
 }

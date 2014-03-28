@@ -50,8 +50,8 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         super(parent, modal);
         this.setModal(false);
         compt = c;
-        modelRoom = new DefaultComboBoxModel<String>();
-        modelUsers = new DefaultListModel<String>();
+        modelRoom = new DefaultComboBoxModel<>();
+        modelUsers = new DefaultListModel<>();
         compt.lireGlobal(this);
         initComponents();
         compt.demandeRoom();
