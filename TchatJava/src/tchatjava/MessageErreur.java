@@ -12,6 +12,7 @@ package tchatjava;
  */
 public class MessageErreur extends javax.swing.JDialog {
 
+    
     /**
      * Creates new form MessageErreur
      */
