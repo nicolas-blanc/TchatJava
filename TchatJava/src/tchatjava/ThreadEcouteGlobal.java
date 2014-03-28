@@ -55,6 +55,9 @@ public class ThreadEcouteGlobal extends Thread {
                         tchat1.setJtextpanel(mss2);
                         tchat1.miseajour();
                         break;
+                    case BAN :
+                        // voir pour fermer le cilent
+                        break;
                     default:
                         //déconnection client
                         System.out.println("erreur");

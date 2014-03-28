@@ -55,6 +55,10 @@ public class Serveur extends Thread implements Serializable {
     public ArrayList<String> getBannis() {
         return sauvegarde.getBannis();
     }
+    
+    public void delBannis(String s) {
+        sauvegarde.delBannis(s);
+    }
 
     public void setBannis(String pseudo) {
         sauvegarde.addBannis(pseudo);
@@ -89,10 +93,6 @@ public class Serveur extends Thread implements Serializable {
 
     public void setRoom(String room, String pseudo) {
         sauvegarde.getRooms().put(room, new Room(pseudo));
-    }
-
-    public String getIp() {
-        return socket_ecoute.getInetAddress().toString();
     }
 
     public String getPort() {
@@ -168,7 +168,7 @@ public class Serveur extends Thread implements Serializable {
     }
 
     public void ban(String pseudo) {
-        //sauvegarde.add(pseudo);
+        setBannis(pseudo);
         for (TraitementClient thread : listThread) {
             if (pseudo.equals(thread.getPseudo())) {
                 thread.ban();
