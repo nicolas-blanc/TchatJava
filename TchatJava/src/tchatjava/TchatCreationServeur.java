@@ -7,7 +7,6 @@
 package tchatjava;
 
 import java.util.ArrayList;
-import javax.swing.ImageIcon;
 import java.awt.Image; 
 import javax.swing.*;
 import message.Message;

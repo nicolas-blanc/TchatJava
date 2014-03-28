@@ -9,9 +9,6 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import message.Message;
-import java.util.*;
-import message.MotCle;
-import static message.MotCle.CLOSE;
 
 public class TraitementClient extends Thread {
 
@@ -92,7 +89,8 @@ public class TraitementClient extends Thread {
                     switch (mss.getMotCle()) {
                         case CLOSE:
                             nonfin = false;
-                            serveur.getConnectes().remove(pseudo);
+                            //serveur.disconnect(pseudo); -> a faire
+                            serveur.getConnecte().remove(pseudo);
                             serveur.getInfoServeur().miseAJourUtilisateurs();
                             break;
                         case MESSAGE:
@@ -103,16 +101,7 @@ public class TraitementClient extends Thread {
                             break;
                         case CREATIONROOM:
                             serveur.setRoom(mss.getMessage(), pseudo);
-                            //ici getMessage() retourne le nom de la salle.
                             this.room = mss.getMessage();
-                            for(String ro : serveur.getRooms().keySet())
-                            {
-                                System.out.println(ro);
-                                for(String Us : serveur.getRooms().get(ro).getUtilisateurs())
-                                {
-                                    System.out.println(" ------------- " + Us);
-                                }
-                            }
                             serveur.renvoi(new Message("", room, message.MotCle.CONNECTIONROOM, serveur.getRooms()));
                             break;
                         case CONNECTIONROOM:
@@ -121,14 +110,13 @@ public class TraitementClient extends Thread {
                             }
                             //ici getMessage() retourne le nom de la salle.
                             this.room = mss.getMessage();
-                            serveur.renvoi(new Message(pseudo, "", MotCle.CONNECTIONROOM, serveur.getRooms()));
+                            serveur.renvoi(new Message(pseudo, "", message.MotCle.CONNECTIONROOM, serveur.getRooms()));
                             break;
                         case DEMANDEROOMS:
                             this.pseudo = mss.getPseudo();
-                            serveur.setConnecte(pseudo);
                             this.renvoi(new Message("", "", message.MotCle.ENVOIROOMS, serveur.getRooms()));
                             serveur.getInfoServeur().miseAJourUtilisateurs();
-                            serveur.renvoi(new Message("", "", message.MotCle.USERCONNECTIONSERVEUR, serveur.getConnectes()));
+                            serveur.renvoi(new Message("", "", message.MotCle.USERCONNECTIONSERVEUR, serveur.getConnecte()));
                             break;
                         case VERIFICATIONPSEUDO:
                             if (serveur.getUtilisateurs().containsKey(mss.getPseudo())) {
@@ -172,8 +160,16 @@ public class TraitementClient extends Thread {
     public String getRoom() {
         return room;
     }
+    
+    public String getPseudo() {
+        return pseudo;
+    }
 
     public void transfertMessage(Message mss) {
         serveur.renvoi(mss, room);
+    }
+    
+    public void ban() {
+        renvoi(new Message(message.MotCle.BAN));
     }
 }
