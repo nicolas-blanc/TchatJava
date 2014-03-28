@@ -8,6 +8,7 @@ package tchatjava;
 
 import java.util.ArrayList;
 import java.awt.Image; 
+import java.awt.event.KeyEvent;
 import javax.swing.*;
 import message.Message;
 
@@ -115,7 +116,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
         jTextField2 = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
+        jButtonEnvoyer = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jPanel3 = new javax.swing.JPanel();
@@ -167,7 +168,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(61, 61, 61)
                 .addComponent(jButton1)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Connexion", jPanel2);
@@ -175,10 +176,16 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
 
-        jButton3.setText("Envoyer");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField2KeyPressed(evt);
+            }
+        });
+
+        jButtonEnvoyer.setText("Envoyer");
+        jButtonEnvoyer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                jButtonEnvoyerActionPerformed(evt);
             }
         });
 
@@ -196,7 +203,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)))
+                        .addComponent(jButtonEnvoyer)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -210,8 +217,8 @@ public class TchatCreationServeur extends javax.swing.JDialog {
                     .addComponent(jScrollPane1))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3))
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonEnvoyer))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -313,8 +320,8 @@ public class TchatCreationServeur extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4)
                 .addContainerGap())
         );
@@ -352,11 +359,11 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         compt.getSave().sauve();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void jButtonEnvoyerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEnvoyerActionPerformed
         // TODO add your handling code here:
         compt.ConnectionEcrireGlobal(jTextField2.getText());
         jTextField2.setText("");
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_jButtonEnvoyerActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
@@ -368,6 +375,13 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         this.dispose();
         System.exit(0);
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jTextField2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            compt.ConnectionEcrireGlobal(jTextField2.getText());
+            jTextField2.setText("");
+        }
+    }//GEN-LAST:event_jTextField2KeyPressed
 
     /**
      * @param args the command line arguments
@@ -415,8 +429,8 @@ public class TchatCreationServeur extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButtonEnvoyer;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
