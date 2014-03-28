@@ -170,6 +170,7 @@ public class TraitementClient extends Thread {
     }
     
     public void ban() {
+        nonfin = false;
         renvoi(new Message(message.MotCle.BAN));
     }
 }

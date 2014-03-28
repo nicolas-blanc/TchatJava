@@ -27,7 +27,7 @@ public class InfoServeur extends javax.swing.JDialog {
     
     public void miseAJourUtilisateurs()
     {
-        jListConnect.setModel(new javax.swing.DefaultComboBoxModel(serveur.getUtilisateurs().keySet().toArray()));
+        jListConnect.setModel(new javax.swing.DefaultComboBoxModel(serveur.getConnecte().toArray()));
     }
     
     public void miseAJourBanis()

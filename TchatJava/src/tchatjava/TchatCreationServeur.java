@@ -53,8 +53,8 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         modelRoom = new DefaultComboBoxModel<String>();
         modelUsers = new DefaultListModel<String>();
         compt.lireGlobal(this);
-        compt.demandeRoom();
         initComponents();
+        compt.demandeRoom();
         if(compt.getImage()!=null)
         {
            ImageIcon i = compt.getImage();
