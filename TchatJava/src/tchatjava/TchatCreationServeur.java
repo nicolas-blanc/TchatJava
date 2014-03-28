@@ -9,7 +9,7 @@ package tchatjava;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import java.awt.Image; 
-import javax.swing.DefaultListModel;
+import javax.swing.*;
 import message.Message;
 
 /**
@@ -23,7 +23,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
     private final Compte compt;
     private String image;
     private DefaultListModel<String> modelUsers;
-    private DefaultListModel<String> modelRoom;
+    private DefaultComboBoxModel<String> modelRoom;
     
     public Compte getCompte()
     {
@@ -50,7 +50,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         super(parent, modal);
         this.setModal(false);
         compt = c;
-        modelRoom = new DefaultListModel<String>();
+        modelRoom = new DefaultComboBoxModel<String>();
         modelUsers = new DefaultListModel<String>();
         compt.lireGlobal(this);
         compt.demandeRoom();
@@ -70,10 +70,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
     
     public void miseajourrooms()
     {
-            for(int i = 0; i < modelRoom.getSize(); i++)
-            {
-                modelRoom.remove(i);
-            }
+            modelRoom.removeAllElements();
             for(String ro : compt.getServeurs().keySet())
             {
                 modelRoom.addElement(ro);
@@ -82,15 +79,11 @@ public class TchatCreationServeur extends javax.swing.JDialog {
     
     public void miseajourconnecte()
     {
-        for(int i = 0; i < modelUsers.getSize(); i++)
-            {
-                modelUsers.remove(i);
-            }
+            modelUsers.removeAllElements();
             for(String us : compt.getUsers())
             {
                 modelUsers.addElement(us);
             }
-            jList1.setModel(modelUsers);
     }
     
     public void setImage(String img)
