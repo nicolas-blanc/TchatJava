@@ -177,11 +177,11 @@ public class Compte {
         th.start();
     }
 
-    public void setImage(ImageIcon i) {
+    public synchronized void setImage(ImageIcon i) {
         img = i;
     }
 
-    public ImageIcon getImage() {
+    public synchronized ImageIcon getImage() {
         return img;
     }
 
@@ -193,19 +193,19 @@ public class Compte {
         this.host = host;
     }
 
-    public HashMap<String, Room> getServeurs() {
+    public synchronized HashMap<String, Room> getServeurs() {
         return serveurs;
     }
 
-    public ArrayList<String> getUsers() {
+    public synchronized ArrayList<String> getUsers() {
         return usersserv;
     }
 
-    public void setUsers(ArrayList<String> users) {
+    public synchronized void setUsers(ArrayList<String> users) {
         usersserv = users;
     }
 
-    public void setServeurs(HashMap<String, Room> serveurs) {
+    public synchronized void setServeurs(HashMap<String, Room> serveurs) {
         this.serveurs = serveurs;
     }
 

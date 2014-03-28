@@ -22,7 +22,6 @@ public class TchatCreationServeur extends javax.swing.JDialog {
     private ArrayList<String> users;
     private final Compte compt;
     private String image;
-    private DefaultListModel<String> modelUsers;
     private DefaultComboBoxModel<String> modelRoom;
     
     public Compte getCompte()
@@ -30,14 +29,11 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         return compt;
     }
     
+    
     public void setJtextpanel(Message mss)
     {
         jTextPane1.setText(jTextPane1.getText()+mss.getPseudo() + " --- " + mss.getMessage()+'\n');
-    }
-    
-    public void setUser(String user)
-    {
-        jList1.add(user, jList1.getComponent(0));
+        jTextPane1.setCaretPosition(jTextPane1.getDocument().getLength());
     }
     
     /**
@@ -51,12 +47,9 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         this.setModal(false);
         compt = c;
         modelRoom = new DefaultComboBoxModel<String>();
-        modelUsers = new DefaultListModel<String>();
         compt.lireGlobal(this);
         compt.demandeRoom();
         initComponents();
-        miseajourconnecte();
-        miseajourrooms();
         if(compt.getImage()!=null)
         {
            ImageIcon i = compt.getImage();
@@ -81,10 +74,10 @@ public class TchatCreationServeur extends javax.swing.JDialog {
     
     public void miseajourconnecte()
     {
-            modelUsers.removeAllElements();
+            jTextPane2.setText("");
             for(String us : compt.getUsers())
             {
-                modelUsers.addElement(us);
+                jTextPane2.setText(jTextPane2.getText() + us + '\n');
             }
     }
     
@@ -117,8 +110,8 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         jTextPane1 = new javax.swing.JTextPane();
         jTextField2 = new javax.swing.JTextField();
         jButtonEnvoyer = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextPane2 = new javax.swing.JTextPane();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
@@ -189,8 +182,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
             }
         });
 
-        jList1.setModel(modelUsers);
-        jScrollPane2.setViewportView(jList1);
+        jScrollPane3.setViewportView(jTextPane2);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -205,21 +197,21 @@ public class TchatCreationServeur extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonEnvoyer)))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane3)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonEnvoyer))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 26, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Global", jPanel1);
@@ -320,7 +312,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4)
                 .addContainerGap())
@@ -437,15 +429,15 @@ public class TchatCreationServeur extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JTextPane jTextPane2;
     // End of variables declaration//GEN-END:variables
 }

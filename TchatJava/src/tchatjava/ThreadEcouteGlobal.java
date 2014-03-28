@@ -56,13 +56,13 @@ public class ThreadEcouteGlobal extends Thread {
                         tchat1.setJtextpanel(mss2);
                         tchat1.miseajour();
                         break;
-                    case BAN :
+                    case BAN:
                         if (tchat1 != null) {
                             tchat1.dispose();
                         }
                         tchat.dispose();
                         MessageErreur me = new MessageErreur();
-                        me.setText("vous avez été déconnecté du serveur");
+                        me.setText("vous êtes bannis du serveur");
                         me.setVisible(true);
                         break;
                     default:

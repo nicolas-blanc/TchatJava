@@ -44,23 +44,23 @@ public class Serveur extends Thread implements Serializable {
         ouvrirEcoute();
     }
 
-    public void setInfoServeur(InfoServeur info) {
+    public synchronized void setInfoServeur(InfoServeur info) {
         this.info = info;
     }
 
-    public InfoServeur getInfoServeur() {
+    public synchronized InfoServeur getInfoServeur() {
         return info;
     }
 
-    public ArrayList<String> getBannis() {
+    public synchronized ArrayList<String> getBannis() {
         return sauvegarde.getBannis();
     }
     
-    public void delBannis(String s) {
+    public synchronized void delBannis(String s) {
         sauvegarde.delBannis(s);
     }
 
-    public void setBannis(String pseudo) {
+    public synchronized void setBannis(String pseudo) {
         sauvegarde.addBannis(pseudo);
     }
 
@@ -69,11 +69,11 @@ public class Serveur extends Thread implements Serializable {
         attenteClient();
     }
 
-    public HashMap<String, Users> getUtilisateurs() {
+    public synchronized HashMap<String, Users> getUtilisateurs() {
         return sauvegarde.getUtilisateurs();
     }
 
-    public ArrayList<String> transformationSetArrayList(Set<String> users) {
+    public synchronized ArrayList<String> transformationSetArrayList(Set<String> users) {
         ArrayList<String> usrs = new ArrayList();
 
         for (String user : users) {
@@ -83,15 +83,15 @@ public class Serveur extends Thread implements Serializable {
         return usrs;
     }
 
-    public void setUtilisateur(String pseudo) {
+    public synchronized void setUtilisateur(String pseudo) {
         sauvegarde.getUtilisateurs().put(pseudo, new Users());
     }
 
-    public HashMap<String, Room> getRooms() {
+    public synchronized HashMap<String, Room> getRooms() {
         return sauvegarde.getRooms();
     }
 
-    public void setRoom(String room, String pseudo) {
+    public synchronized void setRoom(String room, String pseudo) {
         sauvegarde.getRooms().put(room, new Room(pseudo));
     }
 
@@ -104,7 +104,7 @@ public class Serveur extends Thread implements Serializable {
         sauvegarde.sauve();
     }
 
-    public ArrayList<String> getConnecte() {
+    public synchronized ArrayList<String> getConnecte() {
         return connecte;
     }
 
