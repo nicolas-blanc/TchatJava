@@ -56,7 +56,6 @@ public class ThreadEcouteGlobal extends Thread {
                         tchat1.miseajour();
                         break;
                     case BAN :
-                        // voir pour fermer le cilent
                         break;
                     default:
                         //déconnection client
