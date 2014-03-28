@@ -31,18 +31,21 @@ public class Serveur extends Thread implements Serializable {
     private final Integer port;
     private ServerSocket socket_ecoute;
     private Socket socket_transfert;
+    
     private LinkedBlockingQueue<TraitementClient> listThread;
+    
     private HashMap<String, Users> utilisateurs; 
     private HashMap<String, Room> rooms;
-    private ArrayList<String> connectes;
-    private ArrayList<String> banis;
+    
+    private ArrayList<String> connecte;
+    private ArrayList<String> bannis;
+    
     private InfoServeur info;
 
     public Serveur(Integer port) {
         info = null;
         this.port = port;
-        connectes = new ArrayList<>();
-        banis = new ArrayList<>(); 
+        bannis = new ArrayList<>(); 
         this.setUtilisateurs(new HashMap<String, Users>());
         this.setRooms(new HashMap<String, Room>());
         listThread = new LinkedBlockingQueue();
@@ -60,25 +63,14 @@ public class Serveur extends Thread implements Serializable {
         return info;
     }
     
-    public ArrayList<String> getConnectes()
+    public ArrayList<String> getBannis()
     {
-        return connectes;
+        return bannis;
     }
     
-    public void setConnecte(String pseudo)
+    public void setBannis(String pseudo)
     {
-        if(!connectes.contains(pseudo))
-            connectes.add(pseudo);
-    }
-    
-    public ArrayList<String> getBanis()
-    {
-        return banis;
-    }
-    
-    public void setBanis(String pseudo)
-    {
-            banis.add(pseudo);
+            bannis.add(pseudo);
     }
 
     @Override
@@ -129,6 +121,14 @@ public class Serveur extends Thread implements Serializable {
         return p.toString();
     }
 
+    public ArrayList<String> getConnecte() {
+        return connecte;
+    }
+
+    public void setConnecte(String pseudo) {
+        connecte.add(pseudo);
+    }
+    
     private void ouvrirEcoute() {
         try {
             socket_ecoute = new ServerSocket(port);
@@ -185,6 +185,23 @@ public class Serveur extends Thread implements Serializable {
         }
     }
     
+    public void ban(String pseudo) {
+        bannis.add(pseudo);
+        for(TraitementClient thread : listThread) {
+            if(pseudo.equals(thread.getPseudo())) {
+                thread.ban();
+            }
+        }
+    }
+    
+    public void supprimer(String pseudo) {
+        
+    }
+    
+    public void disconnect(String pseudo) {
+        connecte.remove(pseudo);
+    }
+    
     public Serveur restaure() 
     {
             try
@@ -194,7 +211,7 @@ public class Serveur extends Thread implements Serializable {
                 //private static final long serialVersionUID = 1L;
                 return((Serveur) in.readObject());
             } 
-            catch (Exception e) 
+            catch (IOException | ClassNotFoundException e) 
             {
                     MessageErreur dialog = new MessageErreur();
                     dialog.setText("Probleme de restauration");

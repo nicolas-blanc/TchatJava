@@ -29,12 +29,12 @@ public class InfoServeur extends javax.swing.JDialog {
     
     public void miseAJourUtilisateurs()
     {
-        jList1.setModel(new javax.swing.DefaultComboBoxModel(serveur.getUtilisateurs().keySet().toArray()));
+        jListConnect.setModel(new javax.swing.DefaultComboBoxModel(serveur.getUtilisateurs().keySet().toArray()));
     }
     
     public void miseAJourBanis()
     {
-        jList2.setModel(new javax.swing.DefaultComboBoxModel(serveur.getBanis().toArray()));
+        jListBanList.setModel(new javax.swing.DefaultComboBoxModel(serveur.getBannis().toArray()));
     }
     
     
@@ -60,21 +60,21 @@ public class InfoServeur extends javax.swing.JDialog {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        jListConnect = new javax.swing.JList();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jListBanList = new javax.swing.JList();
+        jButtonClose = new javax.swing.JButton();
+        jButtonBan = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
+        jButtonDeban = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(jListConnect);
 
         jLabel1.setText("Serveur en cours d'éxécution");
 
@@ -82,19 +82,19 @@ public class InfoServeur extends javax.swing.JDialog {
 
         jLabel3.setText("Ban liste");
 
-        jScrollPane2.setViewportView(jList2);
+        jScrollPane2.setViewportView(jListBanList);
 
-        jButton1.setText("Eteindre");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonClose.setText("Eteindre");
+        jButtonClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonCloseActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Bannir Pseudo");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        jButtonBan.setText("Bannir Pseudo");
+        jButtonBan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                jButtonBanActionPerformed(evt);
             }
         });
 
@@ -102,7 +102,12 @@ public class InfoServeur extends javax.swing.JDialog {
 
         jLabel5.setText("Port serveur");
 
-        jButton4.setText("Debannir Pseudo");
+        jButtonDeban.setText("Debannir Pseudo");
+        jButtonDeban.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDebanActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -132,11 +137,11 @@ public class InfoServeur extends javax.swing.JDialog {
                                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabel3)))))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton3)
+                                .addComponent(jButtonBan)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton4)
+                                .addComponent(jButtonDeban)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton1)))
+                                .addComponent(jButtonClose)))
                         .addGap(37, 37, 37))))
         );
         layout.setVerticalGroup(
@@ -157,33 +162,43 @@ public class InfoServeur extends javax.swing.JDialog {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
+                    .addComponent(jButtonClose)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton3)
-                        .addComponent(jButton4)))
+                        .addComponent(jButtonBan)
+                        .addComponent(jButtonDeban)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void jButtonBanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBanActionPerformed
         // TODO add your handling code here:
-        if(!((String)jList1.getSelectedValue()).isEmpty())
+        if(!((String)jListConnect.getSelectedValue()).isEmpty())
         {
-            serveur.getConnectes().remove((String)jList1.getSelectedValue());
-            serveur.setBanis((String)jList1.getSelectedValue());
+            serveur.setBannis((String)jListConnect.getSelectedValue());
             this.miseAJourBanis();
             this.miseAJourUtilisateurs();
-            serveur.renvoi(new Message("","",message.MotCle.USERCONNECTIONSERVEUR, serveur.getConnectes()));
+            //serveur.renvoi(new Message("","",message.MotCle.USERCONNECTIONSERVEUR, serveur.getConnectes()));
+            serveur.ban((String)jListConnect.getSelectedValue());
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_jButtonBanActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseActionPerformed
         this.getParent().setVisible(true);
         serveur.sauve();
         this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonCloseActionPerformed
+
+    private void jButtonDebanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDebanActionPerformed
+        if(!((String)jListBanList.getSelectedValue()).isEmpty())
+        {
+            serveur.getBannis().remove((String)jListBanList.getSelectedValue());
+            this.miseAJourBanis();
+            this.miseAJourUtilisateurs();
+            //serveur.renvoi(new Message("","",message.MotCle.USERCONNECTIONSERVEUR, serveur.getConnectes()));
+        }
+    }//GEN-LAST:event_jButtonDebanActionPerformed
 
     /**
      * @param args the command line arguments
@@ -228,16 +243,16 @@ public class InfoServeur extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButtonBan;
+    private javax.swing.JButton jButtonClose;
+    private javax.swing.JButton jButtonDeban;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
+    private javax.swing.JList jListBanList;
+    private javax.swing.JList jListConnect;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables

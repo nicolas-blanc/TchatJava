@@ -1,8 +1,5 @@
 package tchatjava;
 
-import javax.swing.JDialog;
-import tchatjava.MessageErreur;
-import tchatjava.TchatCreationServeur;
 import java.util.*;
 import message.MotCle;
 
@@ -119,34 +116,33 @@ public class TchatCreationCompte extends javax.swing.JFrame {
 
         Integer port = Integer.parseInt(jTextField1.getText());
         String host = jTextField2.getText();
-        
-        if(port!=null && !host.isEmpty())
-        {
-        compt.connexionServeur(port, host);
-        boolean pris = false;
-        if (!((String) jComboBox1.getSelectedItem()).isEmpty()) {
-            pseudo = (String) jComboBox1.getSelectedItem();
-            if (compt.getSave().getPseudos().contains(pseudo)) {
-                compt.getSave().getPseudos().remove(pseudo);
+
+        if (port != null && !host.isEmpty()) {
+            compt.connexionServeur(port, host);
+            boolean pris = false;
+            if (!((String) jComboBox1.getSelectedItem()).isEmpty()) {
+                pseudo = (String) jComboBox1.getSelectedItem();
+                if (compt.getSave().getPseudos().contains(pseudo)) {
+                    compt.getSave().getPseudos().remove(pseudo);
+                } else {
+                    pris = compt.ConnectionVerifPseudo(pseudo);
+                }
+                if (!pris) {
+                    compt.getSave().setPseudo(pseudo);
+                    compt.getSave().sauve();
+                    this.dispose();
+                    TchatCreationServeur tcs = new TchatCreationServeur(this, true, compt);
+                    tcs.setVisible(true);
+                } else {
+                    MessageErreur msserror = new MessageErreur();
+                    msserror.setText("le pseudo a déja été pris");
+                    msserror.setVisible(true);
+                }
             } else {
-                pris = compt.ConnectionVerifPseudo(pseudo);
+                MessageErreur d = new MessageErreur();
+                d.setText("Vous devez mettre un pseudo.");
+                d.setVisible(true);
             }
-            if (!pris) {
-                compt.getSave().setPseudo(pseudo);
-                compt.getSave().sauve();
-                this.dispose();
-                TchatCreationServeur tcs = new TchatCreationServeur(this, true, compt);
-                tcs.setVisible(true);
-            } else {
-                MessageErreur msserror = new MessageErreur();
-                msserror.setText("le pseudo a déja été pris");
-                msserror.setVisible(true);
-            }
-        } else {
-            MessageErreur d = new MessageErreur();
-            d.setText("Vous devez mettre un pseudo.");
-            d.setVisible(true);
-        }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
