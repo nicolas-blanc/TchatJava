@@ -171,6 +171,7 @@ public class Serveur extends Thread implements Serializable {
         setBannis(pseudo);
         for (TraitementClient thread : listThread) {
             if (pseudo.equals(thread.getPseudo())) {
+                System.out.println("Ban" + pseudo);
                 thread.ban();
             }
         }

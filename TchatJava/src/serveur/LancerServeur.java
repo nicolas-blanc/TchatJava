@@ -5,6 +5,8 @@
  */
 package serveur;
 
+import java.awt.event.KeyEvent;
+
 /**
  *
  * @author mouah
@@ -50,6 +52,11 @@ public class LancerServeur extends javax.swing.JFrame {
         });
 
         jFormattedTextField2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#####"))));
+        jFormattedTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jFormattedTextField2KeyPressed(evt);
+            }
+        });
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Port [50000 > 60000]");
@@ -106,6 +113,19 @@ public class LancerServeur extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         System.exit(0);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jFormattedTextField2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jFormattedTextField2KeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            Boolean vrai = true;
+            try {
+                Integer port = Integer.parseInt(jFormattedTextField2.getText());
+                if (port >= 50000 && port <= 60000) {
+                    vrai = false;
+                    InfoServeur infoServ = new InfoServeur(this, rootPaneCheckingEnabled, port);
+                }
+            } catch(NumberFormatException ex) {}
+	}
+    }//GEN-LAST:event_jFormattedTextField2KeyPressed
 
     /**
      * @param args the command line arguments
