@@ -34,9 +34,16 @@ public class Message implements Serializable{
         donnees = null;
     }
     
-    public Message(String pseudo, String message, MotCle motCle, Object don) {
+    public Message(String message, MotCle motCle, Object don) {
         this.message = message;
-        this.pseudo = pseudo;
+        this.pseudo = " ";
+        this.motCle = motCle;
+        donnees = don;
+    }
+    
+    public Message(MotCle motCle, Object don) {
+        this.message = " ";
+        this.pseudo = " ";
         this.motCle = motCle;
         donnees = don;
     }
@@ -54,7 +61,6 @@ public class Message implements Serializable{
         this.motCle = MESSAGE;
         donnees = null;
     }
-    
 
     public String getMessage() {
         return message;
