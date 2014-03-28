@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 package serveur;
+
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author blancn
@@ -11,6 +14,7 @@ package serveur;
 public class InfoServeur extends javax.swing.JDialog {
 
     private Serveur serveur;
+    private DefaultListModel<String> modelUsers;
 
     /**
      * Creates new form InfoServeur
@@ -27,7 +31,11 @@ public class InfoServeur extends javax.swing.JDialog {
     
     public void miseAJourUtilisateurs()
     {
-        jListConnect.setModel(new javax.swing.DefaultComboBoxModel(serveur.getConnecte().toArray()));
+        modelUsers.removeAllElements();
+        for(String use: serveur.getConnecte())
+        modelUsers.addElement(use);
+        
+        jListConnect.setModel(modelUsers);
     }
     
     public void miseAJourBanis()
@@ -174,7 +182,7 @@ public class InfoServeur extends javax.swing.JDialog {
 
     private void jButtonBanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBanActionPerformed
         // TODO add your handling code here:
-        if(!((String)jListConnect.getSelectedValue()).isEmpty())
+        if(!jListConnect.isSelectionEmpty())
         {
             serveur.ban((String)jListConnect.getSelectedValue());
             this.miseAJourBanis();
