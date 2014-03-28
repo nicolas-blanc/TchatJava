@@ -90,6 +90,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
             {
                 modelUsers.addElement(us);
             }
+            jList1.setModel(modelUsers);
     }
     
     public void setImage(String img)
@@ -144,7 +145,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         });
 
         jComboBox1.setEditable(true);
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(compt.getServeurs().keySet().toArray()));
+        jComboBox1.setModel(modelRoom);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -187,6 +188,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
             }
         });
 
+        jList1.setModel(modelUsers);
         jScrollPane2.setViewportView(jList1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
