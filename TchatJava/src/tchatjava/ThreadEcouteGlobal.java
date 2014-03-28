@@ -28,8 +28,9 @@ public class ThreadEcouteGlobal extends Thread {
 
     @Override
     public void run() {
-        try {
+        
             while (tchat.getCompte().getOuvert()) {
+                try {
                 //Scanner sc = new Scanner(System.in);
                 Message mss2 = (Message) tchat.getCompte().getEntree().readObject();
                 switch (mss2.getMotCle()) {
@@ -42,12 +43,7 @@ public class ThreadEcouteGlobal extends Thread {
                         break;
                     case ENVOIROOMS:
                         tchat.getCompte().setServeurs((HashMap<String, Room>) mss2.getDonnees());
-                        break;
-                    case CREATIONROOM:
-                        tchat.getCompte().setServeurs((HashMap<String, Room>) mss2.getDonnees());
-                        if (tchat1 != null) {
-                            tchat1.miseajour();
-                        }
+                        tchat.miseajourrooms();
                         break;
                     case CONNECTIONROOM:
                         tchat.getCompte().setServeurs((HashMap<String, Room>) mss2.getDonnees());
@@ -64,9 +60,9 @@ public class ThreadEcouteGlobal extends Thread {
                         System.out.println("erreur");
                         break;
                 }
-            }
-        } catch (IOException | ClassNotFoundException ex) {
+        } catch (IOException | ClassNotFoundException ex ) {
             Logger.getLogger(Compte.class.getName()).log(Level.SEVERE, null, ex);
         }
+      }
     }
 }
