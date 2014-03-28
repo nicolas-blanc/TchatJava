@@ -114,6 +114,7 @@ public class TraitementClient extends Thread {
                             break;
                         case DEMANDEROOMS:
                             this.pseudo = mss.getPseudo();
+                            serveur.setConnecte(pseudo);
                             this.renvoi(new Message("", "", message.MotCle.ENVOIROOMS, serveur.getRooms()));
                             serveur.getInfoServeur().miseAJourUtilisateurs();
                             serveur.renvoi(new Message("", "", message.MotCle.USERCONNECTIONSERVEUR, serveur.getConnecte()));
