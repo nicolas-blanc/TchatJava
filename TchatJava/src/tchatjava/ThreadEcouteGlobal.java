@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import message.Message;
 import Rooms.Room;
+import javax.swing.JDialog;
 
 public class ThreadEcouteGlobal extends Thread {
 
@@ -56,6 +57,13 @@ public class ThreadEcouteGlobal extends Thread {
                         tchat1.miseajour();
                         break;
                     case BAN :
+                        if (tchat1 != null) {
+                            tchat1.dispose();
+                        }
+                        tchat.dispose();
+                        MessageErreur me = new MessageErreur();
+                        me.setText("vous avez été déconnecté du serveur");
+                        me.setVisible(true);
                         break;
                     default:
                         //déconnection client
