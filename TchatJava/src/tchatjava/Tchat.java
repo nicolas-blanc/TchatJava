@@ -5,8 +5,10 @@
  */
 package tchatjava;
 
+import java.awt.event.KeyEvent;
 import message.Message;
 import javax.swing.*;
+import message.MotCle;
 
 /**
  *
@@ -33,23 +35,33 @@ public class Tchat extends javax.swing.JDialog {
         super(parent, modal);
         this.room = room;
         compt = c;
-        compt.lireRoom(this);
+        compt.lireRoom(this, room);
         initComponents();
 
     }
 
     public void miseajour() {
         jTextPane2.setText("");
+        jTextPane3.setText("");
+        jTextPane4.setText("");
         for(String us : compt.getServeurs().get(room).getUtilisateurs())
             {
                 jTextPane2.setText(jTextPane2.getText()+us+'\n');
+                jTextPane3.setText(jTextPane3.getText()+us+'\n');
+            }
+        
+        for(String us : compt.getServeurs().get(room).getBannis())
+            {
+                jTextPane4.setText(jTextPane4.getText()+us+'\n');
             }
                  
         if (compt.getSave().getPseudos().get(compt.getSave().getPseudos().size() - 1).equals(compt.getServeurs().get(room).getAdministrateur())) {
             jPanel2.setVisible(true);
             jTextField2.setEditable(true);
+            jTextField3.setEditable(true);
             jButton3.setEnabled(true);
             jButton4.setEnabled(true);
+            jButton6.setEnabled(true);
         }
     }
 
@@ -80,12 +92,19 @@ public class Tchat extends javax.swing.JDialog {
         jTextPane3 = new javax.swing.JTextPane();
         jScrollPane6 = new javax.swing.JScrollPane();
         jTextPane4 = new javax.swing.JTextPane();
+        jTextField3 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
+
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
+        });
 
         jButton5.setText("Envoyer");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -137,15 +156,30 @@ public class Tchat extends javax.swing.JDialog {
 
         jButton3.setText("bannir");
         jButton3.setEnabled(false);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Enregistrer");
         jButton4.setEnabled(false);
 
         jButton6.setText("debannir");
+        jButton6.setEnabled(false);
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
+        jTextPane3.setEditable(false);
         jScrollPane3.setViewportView(jTextPane3);
 
+        jTextPane4.setEditable(false);
         jScrollPane6.setViewportView(jTextPane4);
+
+        jTextField3.setEditable(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -164,11 +198,16 @@ public class Tchat extends javax.swing.JDialog {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(33, 33, 33)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton3)
-                            .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(31, 31, 31)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButton3)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                         .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(36, 36, 36))))
         );
@@ -182,16 +221,18 @@ public class Tchat extends javax.swing.JDialog {
                     .addComponent(jButton4))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(42, 42, 42)
+                        .addGap(45, 45, 45)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton3)
-                        .addGap(37, 37, 37)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton6))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("serveur", jPanel2);
@@ -231,16 +272,35 @@ public class Tchat extends javax.swing.JDialog {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
         if (!jTextField1.getText().isEmpty()) {
-            compt.ConnectionEcrire(jTextField1.getText());
+            compt.ConnectionEcrire(jTextField1.getText(), room);
         }
         jTextField1.setText("");
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        compt.lireRoom(null);
+        compt.ecrire(compt.getSave().getPseudos().get(compt.getSave().getPseudos().size()-1), "", MotCle.DECONNECTIONUSERROOM, room);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        if(compt.getServeurs().get(room).getUtilisateurs().contains(jTextField3.getText()))
+        compt.ecrire(jTextField3.getText(), "", MotCle.BANROOM, room);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        if(compt.getServeurs().get(room).getBannis().contains(jTextField3.getText()))
+        compt.ecrire(jTextField3.getText(), "", MotCle.DEBANROOM, room);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            compt.ConnectionEcrire(jTextField1.getText(), room);
+            jTextField1.setText("");
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1KeyPressed
 
     /**
      * @param args the command line arguments
@@ -272,7 +332,7 @@ public class Tchat extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Tchat dialog = new Tchat(new javax.swing.JFrame(), true, new Compte(), new String());
+                Tchat dialog = new Tchat(new javax.swing.JFrame(), false, new Compte(), new String());
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -286,6 +346,7 @@ public class Tchat extends javax.swing.JDialog {
 
     public void setJtextpanel(Message mss) {
         jTextPane1.setText(jTextPane1.getText() + mss.getPseudo() + " --- " + mss.getMessage() + '\n');
+        jTextPane1.setCaretPosition(jTextPane1.getDocument().getLength());
     }
 
 
@@ -305,6 +366,7 @@ public class Tchat extends javax.swing.JDialog {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     private javax.swing.JTextPane jTextPane1;
     private javax.swing.JTextPane jTextPane2;
     private javax.swing.JTextPane jTextPane3;

@@ -46,7 +46,7 @@ public class TchatCreationCompte extends javax.swing.JFrame {
                     compt.getSave().setPseudo(pseudo);
                     compt.getSave().sauve();
                     this.dispose();
-                    TchatCreationServeur tcs = new TchatCreationServeur(this, true, compt);
+                    TchatCreationServeur tcs = new TchatCreationServeur(this, false, compt);
                     tcs.setVisible(true);
                 } else {
                     MessageErreur msserror = new MessageErreur();
@@ -157,7 +157,7 @@ public class TchatCreationCompte extends javax.swing.JFrame {
 
     private void jButtonQuitterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonQuitterActionPerformed
         if (compt.getOuvert()) {
-            compt.ecrire(pseudo, "", MotCle.CLOSE);
+            compt.ecrire(pseudo, "", MotCle.CLOSE, "");
             compt.fermerSocket();
         }
         this.dispose();

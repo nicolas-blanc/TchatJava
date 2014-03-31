@@ -18,7 +18,8 @@ import java.io.OutputStream;
 import message.MotCle;
 import java.util.HashMap;
 import Rooms.Room;
-import java.util.ArrayList; 
+import java.util.ArrayList;
+import java.util.concurrent.*;
 
 /**
  *
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 
 public class Compte {
 
-    private ArrayList<String> usersserv;
+    private LinkedBlockingQueue<String> usersserv;
     private HashMap<String, Room> serveurs;
     private ImageIcon img;
     private SauvegardePseudo save;
@@ -44,7 +45,7 @@ public class Compte {
     public Compte() {
         save = new SauvegardePseudo().restaure();
         serveurs = new HashMap<String, Room>();
-        usersserv = new ArrayList<String>();
+        usersserv = new LinkedBlockingQueue<String>();
     }
     
     public void connexionServeur(Integer port, String host) {
@@ -62,12 +63,17 @@ public class Compte {
     public ObjectInputStream getEntree() {
         return entree;
     }
+    
+    public ThreadEcouteGlobal getThreadEcouteGlobal()
+    {
+        return th;
+    }
 
     public boolean ConnectionVerifPseudo(String pseudo) {
         boolean pris = true;
         try {
             if (this.getOuvert()) {
-                this.ecrire(pseudo, "", message.MotCle.VERIFICATIONPSEUDO);
+                this.ecrire(pseudo, "", message.MotCle.VERIFICATIONPSEUDO, "");
                 Message mss2 = (Message) entree.readObject();
                 if (mss2.getMotCle() == message.MotCle.VERIFICATIONPSEUDO) {
                     if (mss2.getMessage().contains("oui")) {
@@ -84,31 +90,37 @@ public class Compte {
         return pris;
     }
 
-    public void ConnectionEcrire(String mesage) {
+    public void ConnectionEcrire(String mesage, String room) {
         if (this.getOuvert()) {
-            this.ecrire((String) this.getSave().getPseudos().get(this.getSave().getPseudos().size() - 1), mesage, message.MotCle.MESSAGE);
+            this.ecrire((String) this.getSave().getPseudos().get(this.getSave().getPseudos().size() - 1), mesage, message.MotCle.MESSAGE, room);
         }
     }
     
     public void ConnectionEcrireGlobal(String mesage) {
         if (this.getOuvert()) {
-            this.ecrire((String) this.getSave().getPseudos().get(this.getSave().getPseudos().size() - 1), mesage, message.MotCle.MESSAGEGLOBAL);
+            this.ecrire((String) this.getSave().getPseudos().get(this.getSave().getPseudos().size() - 1), mesage, message.MotCle.MESSAGEGLOBAL, "");
         }
     }
 
     public void ConnectionRoom(String room, TchatCreationServeur tchat) {
         if (this.getOuvert()) {
             if (this.serveurs.containsKey(room)) {
-                this.ecrire("", room, message.MotCle.CONNECTIONROOM);
+                this.ecrire("", "", message.MotCle.CONNECTIONROOM, room);
             } else {
-                this.ecrire(this.getSave().getPseudos().get(this.getSave().getPseudos().size() - 1), room, message.MotCle.CREATIONROOM);
+                this.ecrire("", "", message.MotCle.CREATIONROOM, room);
             }
         }
     }
 
     public void demandeRoom() {
             if (this.getOuvert()) {
-                this.ecrire(this.getSave().getPseudos().get(this.getSave().getPseudos().size() - 1), "", message.MotCle.DEMANDEROOMS);
+                this.ecrire(this.getSave().getPseudos().get(this.getSave().getPseudos().size() - 1), "", message.MotCle.DEMANDEROOMS, "");
+        }
+    }
+    
+    public void demandeUsers() {
+            if (this.getOuvert()) {
+                this.ecrire("", "", message.MotCle.DEMANDEUSER, "");
         }
     }
 
@@ -158,18 +170,18 @@ public class Compte {
         }
     }
 
-    public void ecrire(String pseudo, String messageE, message.MotCle m) {
+    public void ecrire(String pseudo, String messageE, message.MotCle m, String room) {
         try {
             // Lectures/ecritures
-            Message mss = new Message(pseudo, messageE, m);
+            Message mss = new Message(pseudo, messageE, m, room);
             sortie.writeObject(mss);
         } catch (IOException ex) {
             Logger.getLogger(Compte.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void lireRoom(Tchat tchat) {
-        th.setTchat(tchat);
+    public void lireRoom(Tchat tchat, String room) {
+        th.setTchat(tchat, room);
     }
 
     public void lireGlobal(TchatCreationServeur tchat) {
@@ -193,19 +205,19 @@ public class Compte {
         this.host = host;
     }
 
-    public synchronized HashMap<String, Room> getServeurs() {
+    public HashMap<String, Room> getServeurs() {
         return serveurs;
     }
 
-    public synchronized ArrayList<String> getUsers() {
+    public LinkedBlockingQueue<String> getUsers() {
         return usersserv;
     }
 
-    public synchronized void setUsers(ArrayList<String> users) {
+    public void setUsers(LinkedBlockingQueue<String> users) {
         usersserv = users;
     }
 
-    public synchronized void setServeurs(HashMap<String, Room> serveurs) {
+    public void setServeurs(HashMap<String, Room> serveurs) {
         this.serveurs = serveurs;
     }
 

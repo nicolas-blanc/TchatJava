@@ -5,7 +5,9 @@
  */
 package serveur;
 
+
 import javax.swing.DefaultListModel;
+import message.Message;
 
 /**
  *
@@ -27,22 +29,43 @@ public class InfoServeur extends javax.swing.JDialog {
         this.getParent().setVisible(false);
         miseAJour();
         this.setVisible(true);
-        
+        jTextPaneBanList.setEditable(false);
+        jTextPanePseudo.setEditable(false);
+        jTextPaneSalon.setEditable(false);
     }
     
     public void miseAJourUtilisateurs()
     {
+        jTextPanePseudo.setText("");
+        for(String use : serveur.getConnecte())
+        {
+            jTextPanePseudo.setText(jTextPanePseudo.getText() + use + '\n');
+        }
     }
     
     public void miseAJourBanis()
     {
+        jTextPaneBanList.setText("");
+        for(String use : serveur.getBannis())
+        {
+            jTextPaneBanList.setText(jTextPaneBanList.getText() + use + '\n');
+        }
     }
     
-    
+    public void miseAJourRooms()
+    {
+        jTextPaneSalon.setText("");
+        for(String room : serveur.getRooms().keySet())
+        {
+            jTextPaneSalon.setText(jTextPaneSalon.getText()+ room+ '\n');
+        }
+    }
 
     private void creerServeur(Integer port) {
         serveur = new Serveur(port);
         serveur.setInfoServeur(this);
+        miseAJourRooms();
+        miseAJourBanis();
         serveur.start();
     }
     
@@ -199,14 +222,14 @@ public class InfoServeur extends javax.swing.JDialog {
 
     private void jButtonBanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBanActionPerformed
         // TODO add your handling code here:
-        /*if(!((String)jListConnect.getSelectedValue()).isEmpty())
+        if(!jTextFieldPseudoBan.getText().isEmpty() && serveur.getConnecte().contains(jTextFieldPseudoBan.getText()))
         {
-            serveur.ban((String)jListConnect.getSelectedValue());
+            serveur.ban(jTextFieldPseudoBan.getText());
             this.miseAJourBanis();
             this.miseAJourUtilisateurs();
-            //serveur.renvoi(new Message("","",message.MotCle.USERCONNECTIONSERVEUR, serveur.getConnectes()));
-            serveur.ban((String)jListConnect.getSelectedValue());
-        }*/
+            serveur.renvoi(new Message(jTextFieldPseudoBan.getText(), message.MotCle.DECONNECTIONUSER));
+            jTextFieldPseudoBan.setText("");
+        }
     }//GEN-LAST:event_jButtonBanActionPerformed
 
     private void jButtonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseActionPerformed
@@ -216,13 +239,13 @@ public class InfoServeur extends javax.swing.JDialog {
     }//GEN-LAST:event_jButtonCloseActionPerformed
 
     private void jButtonDebanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDebanActionPerformed
-        /*if(!((String)jListBanList.getSelectedValue()).isEmpty())
+        if(!jTextFieldPseudoBan.getText().isEmpty() && serveur.getBannis().contains(jTextFieldPseudoBan.getText()))
         {
-            serveur.delBannis((String)jListBanList.getSelectedValue());
+            serveur.delBannis(jTextFieldPseudoBan.getText());
             this.miseAJourBanis();
             this.miseAJourUtilisateurs();
-            //serveur.renvoi(new Message("","",message.MotCle.USERCONNECTIONSERVEUR, serveur.getConnectes()));
-        }*/
+            jTextFieldPseudoBan.setText("");
+        }
     }//GEN-LAST:event_jButtonDebanActionPerformed
 
     /**

@@ -19,12 +19,14 @@ public class Message implements Serializable{
     private final String pseudo;
     private final MotCle motCle;
     private final Object donnees;
+    private final String room;
 
     public Message(String pseudo, MotCle motCle) {
         this.message = "";
         this.pseudo = pseudo;
         this.motCle = motCle;
         donnees = null;
+        room = "";
     }
     
     public Message(String pseudo, String message, MotCle motCle) {
@@ -32,6 +34,15 @@ public class Message implements Serializable{
         this.pseudo = pseudo;
         this.motCle = motCle;
         donnees = null;
+         room = "";
+    }
+    
+    public Message(String pseudo, String message, MotCle motCle, String room) {
+        this.message = message;
+        this.pseudo = pseudo;
+        this.motCle = motCle;
+        donnees = null;
+        this.room = room;
     }
     
     public Message(String message, MotCle motCle, Object don) {
@@ -39,6 +50,7 @@ public class Message implements Serializable{
         this.pseudo = " ";
         this.motCle = motCle;
         donnees = don;
+        room = "";
     }
     
     public Message(MotCle motCle, Object don) {
@@ -46,20 +58,31 @@ public class Message implements Serializable{
         this.pseudo = " ";
         this.motCle = motCle;
         donnees = don;
+        room = "";
     }
 
+    public Message(MotCle motCle, String room) {
+        this.message = "";
+        this.pseudo = "";
+        this.motCle = motCle;
+        donnees = null;
+        this.room = room;
+    }
+    
     public Message(MotCle motCle) {
         this.message = "";
         this.pseudo = "";
         this.motCle = motCle;
         donnees = null;
+        this.room = "";
     }
-
-    public Message(String pseudo, String message) {
+    
+       public Message(String pseudo, String message) {
         this.message = message;
         this.pseudo = pseudo;
         this.motCle = MESSAGE;
         donnees = null;
+        room = "";
     }
 
     public String getMessage() {
@@ -68,6 +91,11 @@ public class Message implements Serializable{
 
     public String getPseudo() {
         return pseudo;
+    }
+    
+    public String getRoom()
+    {
+        return room;
     }
 
     public MotCle getMotCle() {

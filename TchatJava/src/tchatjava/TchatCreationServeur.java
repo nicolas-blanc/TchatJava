@@ -1,13 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package tchatjava;
 
 import java.util.ArrayList;
-import java.awt.Image; 
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
 import message.Message;
@@ -23,21 +17,19 @@ public class TchatCreationServeur extends javax.swing.JDialog {
     private final Compte compt;
     private String image;
     private DefaultComboBoxModel<String> modelRoom;
-    
-    public Compte getCompte()
-    {
+
+    public Compte getCompte() {
         return compt;
     }
-    
-    
-    public void setJtextpanel(Message mss)
-    {
-        jTextPane1.setText(jTextPane1.getText()+mss.getPseudo() + " --- " + mss.getMessage()+'\n');
+
+    public void setJtextpanel(Message mss) {
+        jTextPane1.setText(jTextPane1.getText() + mss.getPseudo() + " --- " + mss.getMessage() + '\n');
         jTextPane1.setCaretPosition(jTextPane1.getDocument().getLength());
     }
-    
+
     /**
      * Creates new form TchatCreationServeur
+     *
      * @param parent
      * @param modal
      * @param c
@@ -47,47 +39,40 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         this.setModal(false);
         compt = c;
         modelRoom = new DefaultComboBoxModel<String>();
+        initComponents();
         compt.lireGlobal(this);
         compt.demandeRoom();
-        initComponents();
-        if(compt.getImage()!=null)
-        {
-           ImageIcon i = compt.getImage();
-           jLabel5.setIcon(i); 
+        compt.demandeUsers();
+        if (compt.getImage() != null) {
+            ImageIcon i = compt.getImage();
+            jLabel5.setIcon(i);
         }
-        jTextField1.setText((String)compt.getSave().getPseudos().get(compt.getSave().getPseudos().size()-1));
+        jTextField1.setText((String) compt.getSave().getPseudos().get(compt.getSave().getPseudos().size() - 1));
     }
-    
-    public void setUsers(ArrayList<String> users)
-    {
+
+    public void setUsers(ArrayList<String> users) {
         this.users = users;
     }
-    
-    public void miseajourrooms()
-    {
-            modelRoom.removeAllElements();
-            for(String ro : compt.getServeurs().keySet())
-            {
-                modelRoom.addElement(ro);
-            }
+
+    public void miseajourrooms() {
+        modelRoom.removeAllElements();
+        for (String ro : compt.getServeurs().keySet()) {
+            modelRoom.addElement(ro);
+        }
     }
-    
-    public void miseajourconnecte()
-    {
-            jTextPane2.setText("");
-            for(String us : compt.getUsers())
-            {
-                jTextPane2.setText(jTextPane2.getText() + us + '\n');
-            }
+
+    public void miseajourconnecte() {
+        jTextPane2.setText("");
+        for (String us : compt.getUsers()) {
+            jTextPane2.setText(jTextPane2.getText() + us + '\n');
+        }
     }
-    
-    public void setImage(String img)
-    {
+
+    public void setImage(String img) {
         image = img;
     }
-    
-    public String getImage()
-    {
+
+    public String getImage() {
         return image;
     }
 
@@ -182,6 +167,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
             }
         });
 
+        jTextPane2.setEditable(false);
         jScrollPane3.setViewportView(jTextPane2);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -323,9 +309,15 @@ public class TchatCreationServeur extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        Tchat t = new Tchat(padres, true, compt, (String)jComboBox1.getSelectedItem());
-        compt.ConnectionRoom((String)jComboBox1.getSelectedItem(), this);
-        t.setVisible(true);
+        if (!compt.getThreadEcouteGlobal().getTchat().containsKey((String) jComboBox1.getSelectedItem())) {
+            Tchat t = new Tchat(padres, false, compt, (String) jComboBox1.getSelectedItem());
+            compt.ConnectionRoom((String) jComboBox1.getSelectedItem(), this);
+            t.setVisible(true);
+        } else {
+            MessageErreur me = new MessageErreur();
+            me.setText("Connection à cette room déjà effectué !");
+            me.setVisible(true);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -336,12 +328,11 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         // TODO add your handling code here:
         SelectionImage sc = new SelectionImage(null, true, this);
         sc.setVisible(true);
-        if(!image.isEmpty())
-        {
-        ImageIcon i = new ImageIcon(image);
-        ImageIcon resultat = new ImageIcon(i.getImage().getScaledInstance(89, 60, Image.SCALE_DEFAULT));
-        jLabel5.setIcon(resultat);
-        compt.setImage(resultat);
+        if (!image.isEmpty()) {
+            ImageIcon i = new ImageIcon(image);
+            ImageIcon resultat = new ImageIcon(i.getImage().getScaledInstance(89, 60, Image.SCALE_DEFAULT));
+            jLabel5.setIcon(resultat);
+            compt.setImage(resultat);
         }
     }//GEN-LAST:event_jLabel5MouseClicked
 
@@ -359,17 +350,16 @@ public class TchatCreationServeur extends javax.swing.JDialog {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        if(compt.getOuvert())
-        {
-        compt.ecrire("", "", message.MotCle.CLOSE);
-        compt.fermerSocket();
+        if (compt.getOuvert()) {
+            compt.ecrire("", "", message.MotCle.CLOSE, "");
+            compt.fermerSocket();
         }
         this.dispose();
         System.exit(0);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jTextField2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             compt.ConnectionEcrireGlobal(jTextField2.getText());
             jTextField2.setText("");
         }
@@ -406,7 +396,7 @@ public class TchatCreationServeur extends javax.swing.JDialog {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                TchatCreationServeur dialog = new TchatCreationServeur(new javax.swing.JFrame(), true, new Compte());
+                TchatCreationServeur dialog = new TchatCreationServeur(new javax.swing.JFrame(), false, new Compte());
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

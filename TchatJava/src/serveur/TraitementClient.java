@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import message.Message;
@@ -21,13 +22,19 @@ public class TraitementClient extends Thread {
     private OutputStream out;
     private ObjectOutputStream sortie;
     private String pseudo;
-    private String room;
+    private LinkedBlockingQueue<String> rooms;
 
     public TraitementClient(Serveur serv, Socket so) {
         serveur = serv;
         socket_transfert = so;
         serveur.addListThread(this);
+        rooms = new LinkedBlockingQueue<String>();
         nonfin = true;
+    }
+    
+    public LinkedBlockingQueue<String> getRooms()
+    {
+        return rooms;
     }
 
     private void ouvrirTransfert() {
@@ -91,37 +98,55 @@ public class TraitementClient extends Thread {
                         case CLOSE:
                             nonfin = false;
                             //serveur.disconnect(pseudo); -> a faire
+                            serveur.renvoi(new Message(pseudo, MotCle.DECONNECTIONUSER));
                             serveur.getConnecte().remove(pseudo);
                             serveur.getInfoServeur().miseAJourUtilisateurs();
                             break;
                         case MESSAGE:
-                            transfertMessage(mss);
+                            transfertMessage(mss, mss.getRoom());
+                            break;
+                        case BANROOM:
+                            serveur.getRooms().get(mss.getRoom()).getUtilisateurs().remove(mss.getPseudo());
+                            serveur.getRooms().get(mss.getRoom()).setBannis(mss.getPseudo());
+                            serveur.renvoi(mss);
+                            break;
+                        case DEBANROOM:
+                            serveur.getRooms().get(mss.getRoom()).setUtilisateur(mss.getPseudo());
+                            serveur.getRooms().get(mss.getRoom()).getBannis().remove(mss.getPseudo());
+                            serveur.renvoi(mss);
                             break;
                         case MESSAGEGLOBAL:
                             serveur.renvoi(mss);
                             break;
                         case CREATIONROOM:
-                            serveur.setRoom(mss.getMessage(), pseudo);
-                            this.room = mss.getMessage();
-                            serveur.renvoi(new Message(room, message.MotCle.CONNECTIONROOM, serveur.getRooms()));
+                            rooms.add(mss.getRoom());
+                            serveur.setRoom(mss.getRoom(), pseudo);
+                            serveur.renvoi(new Message(pseudo, "", message.MotCle.CREATIONROOM, mss.getRoom()));
+                            serveur.getInfoServeur().miseAJourRooms();
                             break;
                         case CONNECTIONROOM:
-                            if (!serveur.getRooms().get(mss.getMessage()).getUtilisateurs().contains(pseudo)) {
-                                serveur.getRooms().get(mss.getMessage()).setUtilisateur(pseudo);
+                            rooms.add(mss.getRoom());
+                            if(!serveur.getRooms().get(mss.getRoom()).getBannis().contains(pseudo))
+                            {
+                            serveur.getRooms().get(mss.getRoom()).setUtilisateur(pseudo);
+                            serveur.renvoi(new Message(pseudo, "", message.MotCle.CONNECTIONROOM, mss.getRoom()));
                             }
-                            //ici getMessage() retourne le nom de la salle.
-                            this.room = mss.getMessage();
-                            serveur.renvoi(new Message(message.MotCle.CONNECTIONROOM, serveur.getRooms()));
+                            else
+                                this.renvoi(new Message(MotCle.BANNIROOM, mss.getRoom()));
                             break;
                         case DEMANDEROOMS:
                             this.pseudo = mss.getPseudo();
-                            if (!(bannis(pseudo))) {  
+                            if (!(bannis(pseudo))) {
                                 serveur.setConnecte(pseudo);
                                 this.renvoi(new Message(message.MotCle.ENVOIROOMS, serveur.getRooms()));
                                 serveur.getInfoServeur().miseAJourUtilisateurs();
-                                serveur.renvoi(new Message(message.MotCle.USERCONNECTIONSERVEUR, serveur.getConnecte()));
-                            } else
+                                serveur.renvoi(new Message(pseudo ,message.MotCle.USERCONNECTIONSERVEUR));
+                            } else {
                                 this.renvoi(new Message(MotCle.BAN));
+                            }
+                            break;
+                        case DEMANDEUSER:
+                            this.renvoi(new Message(message.MotCle.ENVOIUSER, serveur.getConnecte()));
                             break;
                         case VERIFICATIONPSEUDO:
                             if (serveur.getUtilisateurs().containsKey(mss.getPseudo())) {
@@ -135,6 +160,11 @@ public class TraitementClient extends Thread {
                         default:
                             //déconnection client
                             System.out.println("erreur");
+                            break;
+                        case DECONNECTIONUSERROOM:
+                            rooms.remove(mss.getRoom());
+                            serveur.getRooms().get(mss.getRoom()).getUtilisateurs().remove(mss.getPseudo());
+                            serveur.renvoi(mss);
                             break;
                     }
                 } catch (IOException ex) {
@@ -162,23 +192,19 @@ public class TraitementClient extends Thread {
         }
     }
 
-    public String getRoom() {
-        return room;
-    }
-    
     public String getPseudo() {
         return pseudo;
     }
 
-    public void transfertMessage(Message mss) {
+    public void transfertMessage(Message mss, String room) {
         serveur.renvoi(mss, room);
     }
-    
+
     public void ban() {
         nonfin = false;
         renvoi(new Message(message.MotCle.BAN));
     }
-    
+
     public Boolean bannis(String ps) {
         return serveur.getBannis().contains(ps);
     }

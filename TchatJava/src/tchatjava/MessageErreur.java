@@ -13,12 +13,20 @@ package tchatjava;
 public class MessageErreur extends javax.swing.JDialog {
 
     
+    private boolean ban;
+    
     /**
      * Creates new form MessageErreur
      */
     public MessageErreur() {
+        ban = false;
         this.setModal(true);
         initComponents();
+    }
+    
+    public void setBan()
+    {
+        ban = true;
     }
 
     /**
@@ -74,6 +82,10 @@ public class MessageErreur extends javax.swing.JDialog {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         this.dispose();
+        if(ban)
+        {
+            System.exit(0);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

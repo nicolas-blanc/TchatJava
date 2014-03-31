@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 import message.Message;
 import java.util.HashMap;
 import java.util.*;
+import java.util.concurrent.*;
+
 
 /**
  *
@@ -30,7 +32,7 @@ public class Serveur extends Thread implements Serializable {
 
     private LinkedBlockingQueue<TraitementClient> listThread;
 
-    private ArrayList<String> connecte;
+    private LinkedBlockingQueue<String> connecte;
 
     private InfoServeur info;
     private Sauvegarde sauvegarde;
@@ -38,29 +40,29 @@ public class Serveur extends Thread implements Serializable {
     public Serveur(Integer port) {
         info = null;
         this.port = port;
-        connecte = new ArrayList<>();
+        connecte = new LinkedBlockingQueue();
         listThread = new LinkedBlockingQueue();
         sauvegarde = new Sauvegarde().restaure();
         ouvrirEcoute();
     }
 
-    public synchronized void setInfoServeur(InfoServeur info) {
+    public void setInfoServeur(InfoServeur info) {
         this.info = info;
     }
 
-    public synchronized InfoServeur getInfoServeur() {
+    public InfoServeur getInfoServeur() {
         return info;
     }
 
-    public synchronized ArrayList<String> getBannis() {
+    public ArrayList<String> getBannis() {
         return sauvegarde.getBannis();
     }
     
-    public synchronized void delBannis(String s) {
+    public void delBannis(String s) {
         sauvegarde.delBannis(s);
     }
 
-    public synchronized void setBannis(String pseudo) {
+    public void setBannis(String pseudo) {
         sauvegarde.addBannis(pseudo);
     }
 
@@ -69,11 +71,11 @@ public class Serveur extends Thread implements Serializable {
         attenteClient();
     }
 
-    public synchronized HashMap<String, Users> getUtilisateurs() {
+    public HashMap<String, Users> getUtilisateurs() {
         return sauvegarde.getUtilisateurs();
     }
 
-    public synchronized ArrayList<String> transformationSetArrayList(Set<String> users) {
+    public ArrayList<String> transformationSetArrayList(Set<String> users) {
         ArrayList<String> usrs = new ArrayList();
 
         for (String user : users) {
@@ -83,15 +85,15 @@ public class Serveur extends Thread implements Serializable {
         return usrs;
     }
 
-    public synchronized void setUtilisateur(String pseudo) {
+    public void setUtilisateur(String pseudo) {
         sauvegarde.getUtilisateurs().put(pseudo, new Users());
     }
 
-    public synchronized HashMap<String, Room> getRooms() {
+    public HashMap<String, Room> getRooms() {
         return sauvegarde.getRooms();
     }
 
-    public synchronized void setRoom(String room, String pseudo) {
+    public void setRoom(String room, String pseudo) {
         sauvegarde.getRooms().put(room, new Room(pseudo));
     }
 
@@ -104,7 +106,7 @@ public class Serveur extends Thread implements Serializable {
         sauvegarde.sauve();
     }
 
-    public synchronized ArrayList<String> getConnecte() {
+    public LinkedBlockingQueue<String> getConnecte() {
         return connecte;
     }
 
@@ -147,18 +149,21 @@ public class Serveur extends Thread implements Serializable {
 
     public void renvoi(Message mss, String room) {
         for (TraitementClient thread : listThread) {
-            if (room.equals(thread.getRoom())) {
+            if (thread.getRooms().contains(room)) {
                 thread.renvoi(mss);
             }
         }
     }
 
+    
     public void renvoi(Message mss) {
         for (TraitementClient thread : listThread) {
+            System.out.println(thread.getPseudo());
             thread.renvoi(mss);
         }
     }
 
+    
     public void renvoi(Message mss, TraitementClient th) {
         for (TraitementClient thread : listThread) {
             if (!th.equals(thread)) {
@@ -169,6 +174,7 @@ public class Serveur extends Thread implements Serializable {
 
     public void ban(String pseudo) {
         setBannis(pseudo);
+        connecte.remove(pseudo);
         for (TraitementClient thread : listThread) {
             if (pseudo.equals(thread.getPseudo())) {
                 System.out.println("Ban" + pseudo);

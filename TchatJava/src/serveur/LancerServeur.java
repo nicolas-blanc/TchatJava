@@ -52,6 +52,7 @@ public class LancerServeur extends javax.swing.JFrame {
         });
 
         jFormattedTextField2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#####"))));
+        jFormattedTextField2.setText("51569");
         jFormattedTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jFormattedTextField2KeyPressed(evt);
