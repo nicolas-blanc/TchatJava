@@ -25,13 +25,14 @@ public class InfoServeur extends javax.swing.JDialog {
         super(parent, modal);
         modelUsers = new DefaultListModel<>();
         initComponents();
+        jTextPaneBanList.setEditable(false);
+        jTextPanePseudo.setEditable(false);
+        jTextPaneSalon.setEditable(false);
+        jTextFieldPseudoBan.setText("pseudo");
         creerServeur(port);
         this.getParent().setVisible(false);
         miseAJour();
         this.setVisible(true);
-        jTextPaneBanList.setEditable(false);
-        jTextPanePseudo.setEditable(false);
-        jTextPaneSalon.setEditable(false);
     }
     
     public void miseAJourUtilisateurs()
@@ -228,8 +229,9 @@ public class InfoServeur extends javax.swing.JDialog {
             this.miseAJourBanis();
             this.miseAJourUtilisateurs();
             serveur.renvoi(new Message(jTextFieldPseudoBan.getText(), message.MotCle.DECONNECTIONUSER));
-            jTextFieldPseudoBan.setText("");
+            
         }
+        jTextFieldPseudoBan.setText("");
     }//GEN-LAST:event_jButtonBanActionPerformed
 
     private void jButtonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseActionPerformed
@@ -244,8 +246,9 @@ public class InfoServeur extends javax.swing.JDialog {
             serveur.delBannis(jTextFieldPseudoBan.getText());
             this.miseAJourBanis();
             this.miseAJourUtilisateurs();
-            jTextFieldPseudoBan.setText("");
+            
         }
+        jTextFieldPseudoBan.setText("");
     }//GEN-LAST:event_jButtonDebanActionPerformed
 
     /**
