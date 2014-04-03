@@ -92,6 +92,8 @@ public class Tchat extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        jPanel1.setPreferredSize(new java.awt.Dimension(524, 248));
+
         jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
 
@@ -144,6 +146,8 @@ public class Tchat extends javax.swing.JDialog {
         );
 
         jTabbedPane1.addTab("chat", jPanel1);
+
+        jPanel2.setPreferredSize(new java.awt.Dimension(524, 248));
 
         jButton3.setText("bannir");
         jButton3.setEnabled(false);
@@ -199,7 +203,7 @@ public class Tchat extends javax.swing.JDialog {
                 .addComponent(jButton3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton6)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(86, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

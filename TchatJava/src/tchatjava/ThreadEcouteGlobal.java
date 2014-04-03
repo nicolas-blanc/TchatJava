@@ -76,7 +76,6 @@ public class ThreadEcouteGlobal extends Thread {
                         break;
                     case MESSAGE:
                         tchat1.get(mss2.getRoom()).setJtextpanel(mss2);
-                        tchat1.get(mss2.getRoom()).miseajour();
                         break;
                     case BAN:
                         if (!tchat1.isEmpty() && tchat1.containsKey(mss2.getRoom())) {
@@ -124,6 +123,17 @@ public class ThreadEcouteGlobal extends Thread {
                                     get(tchat.getCompte().getSave().getPseudos().size() - 1).equals(mss2.getPseudo()))
                             this.tchat1.remove(mss2.getRoom());
                         }
+                        break;
+                    case CLOSE:
+                        for(String room : tchat1.keySet())
+                            tchat1.get(room).dispose();
+                        
+                        tchat.dispose();
+                        MessageErreur mess = new MessageErreur();
+                        mess.setText("le serveur a fermé");
+                        mess.setVisible(true);
+                        mess.setBan();
+                        System.exit(0);
                         break;
                     default:
                         //déconnection client

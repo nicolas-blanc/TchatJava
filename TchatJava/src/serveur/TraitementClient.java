@@ -98,6 +98,7 @@ public class TraitementClient extends Thread {
                         case CLOSE:
                             nonfin = false;
                             //serveur.disconnect(pseudo); -> a faire
+                            serveur.getListThread().remove(this);
                             serveur.renvoi(new Message(pseudo, MotCle.DECONNECTIONUSER));
                             serveur.getConnecte().remove(pseudo);
                             serveur.getInfoServeur().miseAJourUtilisateurs();

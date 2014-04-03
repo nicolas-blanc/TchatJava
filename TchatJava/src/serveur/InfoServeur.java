@@ -237,6 +237,7 @@ public class InfoServeur extends javax.swing.JDialog {
     private void jButtonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseActionPerformed
         this.getParent().setVisible(true);
         serveur.sauve();
+        serveur.fermerServeur();
         this.dispose();
     }//GEN-LAST:event_jButtonCloseActionPerformed
 

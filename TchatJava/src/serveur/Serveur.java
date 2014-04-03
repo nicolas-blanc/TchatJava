@@ -18,6 +18,7 @@ import message.Message;
 import java.util.HashMap;
 import java.util.*;
 import java.util.concurrent.*;
+import message.MotCle;
 
 
 /**
@@ -64,6 +65,11 @@ public class Serveur extends Thread implements Serializable {
 
     public void setBannis(String pseudo) {
         sauvegarde.addBannis(pseudo);
+    }
+    
+    public LinkedBlockingQueue<TraitementClient> getListThread()
+    {
+        return listThread;
     }
 
     @Override
@@ -181,5 +187,9 @@ public class Serveur extends Thread implements Serializable {
                 thread.ban();
             }
         }
+    }
+    
+    public void fermerServeur() {
+            this.renvoi(new Message(MotCle.CLOSE));
     }
 }
