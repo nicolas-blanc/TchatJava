@@ -150,7 +150,7 @@ public class TraitementClient extends Thread {
                             this.renvoi(new Message(message.MotCle.ENVOIUSER, serveur.getConnecte()));
                             break;
                         case VERIFICATIONPSEUDO:
-                            if (serveur.getUtilisateurs().containsKey(mss.getPseudo())) {
+                            if (serveur.getUtilisateurs().containsKey(mss.getPseudo()) || serveur.getConnecte().contains(mss.getPseudo())) {
                                 this.renvoi(new Message("oui", message.MotCle.VERIFICATIONPSEUDO));
                             } else {
                                 this.renvoi(new Message("non", message.MotCle.VERIFICATIONPSEUDO));
